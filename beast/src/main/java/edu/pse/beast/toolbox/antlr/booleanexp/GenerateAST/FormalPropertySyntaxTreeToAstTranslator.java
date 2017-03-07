@@ -185,8 +185,7 @@ public class FormalPropertySyntaxTreeToAstTranslator extends FormalPropertyDescr
 
     @Override
     public void exitNumberExpression(FormalPropertyDescriptionParser.NumberExpressionContext ctx) {
-        int number = Integer.valueOf(ctx.getText());
-        NumberExpression expNode = new NumberExpression(number);
+        NumberExpression expNode = new NumberExpression(ctx.getText());
         expStack.add(expNode);
     }
 

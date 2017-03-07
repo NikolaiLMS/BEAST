@@ -12,15 +12,15 @@ import edu.pse.beast.datatypes.internal.InternalTypeRep;
  * @author Holger-Desktop
  */
 public class NumberExpression extends TypeExpression{
-    private final int number;
+    private final String numberAsString;
     
-    public NumberExpression(int number) {
+    public NumberExpression(String numberAsString) {
         super(new InternalTypeContainer(InternalTypeRep.INTEGER));
-        this.number = number;
+        this.numberAsString = numberAsString;
     }
 
-    public int getNumber() {
-        return number;
+    public String getNumberAsString() {
+        return numberAsString;
     }    
 
     @Override

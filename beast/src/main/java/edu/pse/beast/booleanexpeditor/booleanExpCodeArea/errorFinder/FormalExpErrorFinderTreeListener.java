@@ -38,6 +38,9 @@ public class FormalExpErrorFinderTreeListener implements FormalPropertyDescripti
     private ElectionTypeContainer input;
     private ElectionTypeContainer output;
     private Stack<TypeExpression> expStack;
+    private int minNumVoter = 0;
+    private int minNumCand = 0;
+    private int minNumSeat = 0;
 
     public FormalExpErrorFinderTreeListener(SymbolicVariableList list, CElectionDescriptionEditor ceditor) {
         list.addListener(this);
@@ -50,6 +53,17 @@ public class FormalExpErrorFinderTreeListener implements FormalPropertyDescripti
         ceditor.addListener(this);
     }
 
+    public void setMinNumVoter(int minNumVoter) {
+        this.minNumVoter = minNumVoter;
+    }
+
+    public void setMinNumCand(int minNumCand) {
+        this.minNumCand = minNumCand;
+    }
+
+    public void setMinNumSeat(int minNumSeat) {
+        this.minNumSeat = minNumSeat;
+    }
     public void setInput(ElectionTypeContainer input) {
         this.input = input;
     }
@@ -185,7 +199,6 @@ public class FormalExpErrorFinderTreeListener implements FormalPropertyDescripti
 
     @Override
     public void exitVoterPosExp(FormalPropertyDescriptionParser.VoterPosExpContext ctx) {
-
     }
 
     @Override
@@ -215,7 +228,7 @@ public class FormalExpErrorFinderTreeListener implements FormalPropertyDescripti
 
     @Override
     public void exitNumberExpression(FormalPropertyDescriptionParser.NumberExpressionContext ctx) {
-        expStack.add(new NumberExpression(Integer.valueOf(ctx.getText())));
+        expStack.add(new NumberExpression(ctx.getText()));
     }
 
     @Override

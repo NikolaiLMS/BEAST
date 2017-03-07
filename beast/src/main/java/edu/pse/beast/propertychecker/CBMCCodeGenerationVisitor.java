@@ -410,7 +410,12 @@ public class CBMCCodeGenerationVisitor implements BooleanExpNodeVisitor {
 
     @Override
     public void visitNumberExpNode(NumberExpression exp) {
-        variableNames.push(String.valueOf(exp.getNumber()));
+        variableNames.push(exp.getNumberAsString());
+    }
+
+    @Override
+    public void visitPosExpNode(PosExpNode posExpNode) {
+
     }
 
     private void testIfLast() {

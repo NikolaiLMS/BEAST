@@ -92,4 +92,10 @@ public interface BooleanExpNodeVisitor {
      * @param exp the number expression to visit
      */
     void visitNumberExpNode(NumberExpression exp);
+
+    /**
+     *
+     * @param posExpNode the posExpNode to visit
+     */
+    void visitPosExpNode(PosExpNode posExpNode);
 }
