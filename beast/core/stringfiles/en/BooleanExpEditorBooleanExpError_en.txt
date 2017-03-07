@@ -11,3 +11,4 @@ char : Character
 preProps : Pre-conditions
 postProps : Post-conditions
 number_must_be_greater_0_descr : The passed number must be greater than zero
+amt_Voter_too_high_descr : the passed position PASSED is too high, since the minimum amount of voters tested is MIN.

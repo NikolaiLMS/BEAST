@@ -21,7 +21,7 @@ public class BooleanExpErrorFactory {
     private static final  String[] errorIds = 
     {"antlr", "var_not_decl", "too_many_vars_passed", "wrong_var_type_passed",
         "incomparable_types", "incomparable_list_sizes", "wrong_var_passed_to_votesum",
-        "number_must_be_greater_0"};  
+        "number_must_be_greater_0", "amt_Voter_too_high"};
     
     private static int getErrorNum(String id) {
         for (int i = 0; i < errorIds.length; ++i) {
@@ -98,7 +98,14 @@ public class BooleanExpErrorFactory {
         CodeError err = generateStandardError(ctx, "number_must_be_greater_0");
         return err;
     }
-    
+
+    public static CodeError createAmtVoterToHigh(FormalPropertyDescriptionParser.VoterPosExpContext ctx, int passedNumber, int minNumVoter) {
+        CodeError err = generateStandardError(ctx, "amt_Voter_too_high");
+        err.setExtraInfo("passed", String.valueOf(passedNumber));
+        err.setExtraInfo("min", String.valueOf(minNumVoter));
+        return err;
+    }
+
     private static CodeError generateStandardError(ParserRuleContext ctx, String id) {
         int pos = ctx.getStart().getStartIndex();
         int endPos = ctx.getStop().getStopIndex();
@@ -108,13 +115,5 @@ public class BooleanExpErrorFactory {
         return err;
     }
 
-    
 
-    
-
-    
-
-    
-
-    
 }

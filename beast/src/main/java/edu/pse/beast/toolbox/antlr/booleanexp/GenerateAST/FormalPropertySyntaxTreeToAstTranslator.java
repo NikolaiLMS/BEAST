@@ -34,6 +34,7 @@ public class FormalPropertySyntaxTreeToAstTranslator extends FormalPropertyDescr
     private int maxVoteExp = 0;
     private int currentHighestElect = 0;
     private BooleanExpScopehandler scopeHandler;
+    private int depthInNumExp = 0;
 
     public BooleanExpListNode generateFromSyntaxTree(
             BooleanExpListContext parseTree,
@@ -180,19 +181,21 @@ public class FormalPropertySyntaxTreeToAstTranslator extends FormalPropertyDescr
 
     @Override
     public void enterNumberExpression(FormalPropertyDescriptionParser.NumberExpressionContext ctx) {
-
+        if(depthInNumExp == 0) {
+            NumberExpression expNode = new NumberExpression(ctx.getText());
+            expStack.add(expNode);
+        }
+        depthInNumExp++;
     }
 
     @Override
     public void exitNumberExpression(FormalPropertyDescriptionParser.NumberExpressionContext ctx) {
-        NumberExpression expNode = new NumberExpression(ctx.getText());
-        expStack.add(expNode);
+        depthInNumExp--;
     }
 
     @Override
     public void enterElectExp(FormalPropertyDescriptionParser.ElectExpContext ctx) {
         InternalTypeContainer container = resType;
-
     }
 
     @Override

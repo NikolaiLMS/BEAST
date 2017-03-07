@@ -41,6 +41,7 @@ public class FormalExpErrorFinderTreeListener implements FormalPropertyDescripti
     private int minNumVoter = 0;
     private int minNumCand = 0;
     private int minNumSeat = 0;
+    private int depthInNumExp = 0;
 
     public FormalExpErrorFinderTreeListener(SymbolicVariableList list, CElectionDescriptionEditor ceditor) {
         list.addListener(this);
@@ -199,6 +200,11 @@ public class FormalExpErrorFinderTreeListener implements FormalPropertyDescripti
 
     @Override
     public void exitVoterPosExp(FormalPropertyDescriptionParser.VoterPosExpContext ctx) {
+        String numberString = ctx.passInt().Integer().toString();
+        int passedNumber = Integer.valueOf(numberString);
+        if(passedNumber > minNumVoter)
+            created.add(BooleanExpErrorFactory.createAmtVoterToHigh(ctx, passedNumber, minNumVoter));
+        expStack.push(new PosExpNode(new InternalTypeContainer(InternalTypeRep.VOTER), passedNumber));
     }
 
     @Override
@@ -223,12 +229,16 @@ public class FormalExpErrorFinderTreeListener implements FormalPropertyDescripti
 
     @Override
     public void enterNumberExpression(FormalPropertyDescriptionParser.NumberExpressionContext ctx) {
-
+        if(depthInNumExp == 0) {
+            NumberExpression expNode = new NumberExpression(ctx.getText());
+            expStack.add(expNode);
+        }
+        depthInNumExp++;
     }
 
     @Override
     public void exitNumberExpression(FormalPropertyDescriptionParser.NumberExpressionContext ctx) {
-        expStack.add(new NumberExpression(ctx.getText()));
+        depthInNumExp--;
     }
 
     @Override

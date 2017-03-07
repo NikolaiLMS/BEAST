@@ -77,8 +77,12 @@ public class BooleanExpErrorDisplayer extends ErrorDisplayer {
         } else if (codeError.getId().equals("number_must_be_greater_0")) {
             String template = getTemplateString("number_must_be_greater_0");            
             return template;
-        }                
-                
+        } else if (codeError.getId().equals("amt_Voter_too_high")) {
+            String template = getTemplateString("amt_Voter_too_high");
+            template.replace("MIN", codeError.getExtraInfo("min"));
+            template.replace("PASSED", codeError.getExtraInfo("passed"));
+            return template;
+        }
         return "";
     }
 

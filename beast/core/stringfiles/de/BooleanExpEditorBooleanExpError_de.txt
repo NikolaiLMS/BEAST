@@ -11,3 +11,4 @@ char : Zeichen
 preProps : Vorbedingungen
 postProps : Nachbedingungen
 number_must_be_greater_0_descr : Die übergebene Zahl muss größer als Null sein
+amt_Voter_too_high_descr : Die übergebene Position PASSED ist zu hoch, denn die Mindestanzahl an Wählern beträgt lediglich MIN.
