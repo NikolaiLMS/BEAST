@@ -9,22 +9,34 @@ booleanExp : 	quantorExp | binaryRelationExp | notExp | comparisonExp | OpenBrac
 binaryRelationExp : binaryRelationExp BinaryRelationSymbol booleanExp |
 					quantorExp BinaryRelationSymbol booleanExp |
 					notExp BinaryRelationSymbol booleanExp |
-					comparisonExp BinaryRelationSymbol booleanExp |	
-			
+					comparisonExp BinaryRelationSymbol booleanExp |
+
 					'(' binaryRelationExp ')' BinaryRelationSymbol booleanExp |
 					'(' quantorExp ')' BinaryRelationSymbol booleanExp |
 					'(' notExp ')' BinaryRelationSymbol booleanExp |
-					'(' comparisonExp ')' BinaryRelationSymbol booleanExp; 		
+					'(' comparisonExp ')' BinaryRelationSymbol booleanExp;
 
-quantorExp : Quantor passSymbVar ':' booleanExp; 	
+quantorExp : Quantor passSymbVar ':' booleanExp;
 
 notExp : '!' booleanExp;
 
 comparisonExp : typeExp ComparisonSymbol typeExp;
 
-typeExp : electExp | voteExp | constantExp | voteSumExp | symbolicVarExp | numberExpression;
+typeExp : electExp | voteExp | constantExp | voteSumExp | symbolicVarExp | numberExpression | posExpression;
 
-numberExpression : Integer;
+posExpression: voterPosExp | candPosExp | seatPosExp;
+
+voterPosExp: 'VOTER_BY_POS' + passInt;
+
+candPosExp: 'CANDIDATE_BY_POS' + passInt;
+
+seatPosExp: 'SEAT_BY_POS' + passInt;
+
+numberExpression : 	'(' numberExpression ')' | 
+			numberExpression Mult numberExpression |
+			numberExpression Add numberExpression | 
+			Integer |
+			constantExp;
 
 electExp :  Elect passSymbVar*;
 
@@ -36,9 +48,15 @@ voteSumExp : Votesum passSymbVar;
 
 passSymbVar : OpenBracket symbolicVarExp ClosedBracket;
 
+passInt : OpenBracket Integer ClosedBracket;
+
 symbolicVarExp : Identifier;
 
 //Lexer
+
+Mult: '*' | '/';
+
+Add: '+' | '-';
 
 Vote : 'VOTES' Integer;
 
@@ -55,10 +73,10 @@ Quantor : 	'FOR_ALL_VOTERS' | 'FOR_ALL_CANDIDATES' | 'FOR_ALL_SEATS' |
 
 ComparisonSymbol : '==' | '!=' | '<=' | '>=' | '<' | '>';
 
-BinaryRelationSymbol : '&&' | '||' | '==>' | '<==>';		
-			
+BinaryRelationSymbol : '&&' | '||' | '==>' | '<==>';
+
 Integer : Digit+;
-			
+
 // same rules as C
 
 Identifier
@@ -95,12 +113,12 @@ fragment
 HexQuad
     :   HexadecimalDigit HexadecimalDigit HexadecimalDigit HexadecimalDigit
     ;
-	
+
 fragment
 HexadecimalDigit
     :   [0-9a-fA-F]
     ;
-	
+
 Whitespace
     :   [ \t]+
         -> skip

@@ -169,6 +169,46 @@ public class FormalExpErrorFinderTreeListener implements FormalPropertyDescripti
     }
 
     @Override
+    public void enterPosExpression(FormalPropertyDescriptionParser.PosExpressionContext ctx) {
+
+    }
+
+    @Override
+    public void exitPosExpression(FormalPropertyDescriptionParser.PosExpressionContext ctx) {
+
+    }
+
+    @Override
+    public void enterVoterPosExp(FormalPropertyDescriptionParser.VoterPosExpContext ctx) {
+
+    }
+
+    @Override
+    public void exitVoterPosExp(FormalPropertyDescriptionParser.VoterPosExpContext ctx) {
+
+    }
+
+    @Override
+    public void enterCandPosExp(FormalPropertyDescriptionParser.CandPosExpContext ctx) {
+
+    }
+
+    @Override
+    public void exitCandPosExp(FormalPropertyDescriptionParser.CandPosExpContext ctx) {
+
+    }
+
+    @Override
+    public void enterSeatPosExp(FormalPropertyDescriptionParser.SeatPosExpContext ctx) {
+
+    }
+
+    @Override
+    public void exitSeatPosExp(FormalPropertyDescriptionParser.SeatPosExpContext ctx) {
+
+    }
+
+    @Override
     public void enterNumberExpression(FormalPropertyDescriptionParser.NumberExpressionContext ctx) {
 
     }
@@ -290,6 +330,16 @@ public class FormalExpErrorFinderTreeListener implements FormalPropertyDescripti
 
     @Override
     public void exitPassSymbVar(FormalPropertyDescriptionParser.PassSymbVarContext ctx) {
+
+    }
+
+    @Override
+    public void enterPassInt(FormalPropertyDescriptionParser.PassIntContext ctx) {
+
+    }
+
+    @Override
+    public void exitPassInt(FormalPropertyDescriptionParser.PassIntContext ctx) {
 
     }
 
