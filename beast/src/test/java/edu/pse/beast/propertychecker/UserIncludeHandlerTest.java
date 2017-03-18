@@ -6,6 +6,7 @@
 package edu.pse.beast.propertychecker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -14,6 +15,38 @@ import static org.junit.Assert.*;
  * @author Niels
  */
 public class UserIncludeHandlerTest {
+
+    private static final String[] CLIBRARIES = new String[]{
+        "<assert.h>",
+        "<complex.h>",
+        "<ctype.h>",
+        "<errno.h>",
+        "<fenv.h>",
+        "<float.h>",
+        "<inttypes.h>",
+        "<iso646.h>",
+        "<limits.h>",
+        "<locale.h>",
+        "<math.h>",
+        "<setjmp.h>",
+        "<signal.h>",
+        "<stdalign.h>",
+        "<stdarg.h>",
+        "<stdatomic.h>",
+        "<stdbool.h>",
+        "<stddef.h>",
+        "<stdint.h>",
+        "<stdio.h>",
+        "<stdlib.h>",
+        "<stdnoreturn.h>",
+        "<string.h>",
+        "<tgmath.h>",
+        "<threads.h>",
+        "<time.h>",
+        "<uchar.h>",
+        "<wchar.h>",
+        "<wctype.h>"
+    };
 
     private UserIncludeHandler instance;
 
@@ -32,8 +65,20 @@ public class UserIncludeHandlerTest {
         result.forEach((line) -> {
             System.out.println(line);
         });
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        String[] expResult = new String[]{
+            "#include <stdlib.h>",
+            "#include <stdint.h>",
+            "#include <assert.h>"
+        };
+        assertEquals(result.size(), expResult.length);
+        for (int i = 0; i < result.size(); i++) {
+            assertEquals(result.get(i), expResult[i]);
+
+        }
+        for (int i = 0; i < CLIBRARIES.length; i++) {
+            System.out.println("#include " + CLIBRARIES[i]);
+        }
+
     }
 
 }

@@ -5,6 +5,8 @@
  */
 package edu.pse.beast.propertychecker;
 
+import edu.pse.beast.celectiondescriptioneditor.CElectionCodeArea.ErrorHandling.DeepErrorChecker;
+import edu.pse.beast.codearea.ErrorHandling.CodeError;
 import edu.pse.beast.toolbox.ErrorForUserDisplayer;
 import edu.pse.beast.toolbox.FileLoader;
 import edu.pse.beast.toolbox.SuperFolderFinder;
@@ -12,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -24,11 +27,47 @@ public class UserIncludeHandler {
         "#include <stdint.h>",
         "#include <assert.h>"
     };
-
+    private static final String[] CLIBRARIES = new String[]{
+        "<assert.h>",
+        "<complex.h>",
+        "<ctype.h>",
+        "<errno.h>",
+        "<fenv.h>",
+        "<float.h>",
+        "<inttypes.h>",
+        "<iso646.h>",
+        "<limits.h>",
+        "<locale.h>",
+        "<math.h>",
+        "<setjmp.h>",
+        "<signal.h>",
+        "<stdalign.h>",
+        "<stdarg.h>",
+        "<stdatomic.h>",
+        "<stdbool.h>",
+        "<stddef.h>",
+        "<stdint.h>",
+        "<stdio.h>",
+        "<stdlib.h>",
+        "<stdnoreturn.h>",
+        "<string.h>",
+        "<tgmath.h>",
+        "<threads.h>",
+        "<time.h>",
+        "<uchar.h>",
+        "<wchar.h>",
+        "<wctype.h>"
+    };
     private ArrayList<String> code;
+    private List<CodeError> errorList;
+    private ArrayList<String> errorLines;
+    private boolean errorsFound;
 
     public UserIncludeHandler() {
+        errorLines = new ArrayList<>();
+        errorList = new ArrayList<>();
         code = new ArrayList<>();
+        errorsFound = false;
         File file = new File(SuperFolderFinder.getSuperFolder() + "/core/includefile/userinclude.txt");
 
         try {
@@ -48,25 +87,38 @@ public class UserIncludeHandler {
     }
 
     private void checkIncludeCode(File file) {
-        boolean includeCodeCorrect = true;
-        for (String includeLine : code) {
-            // test for errors in every line.
-            // if one line is faulty set includeCodeCorrect to false
-
-            if (!includeCodeCorrect) {
-                String message = "User include file contains errors.\n"
-                        + "It is located here: " + file.getAbsolutePath() + "\n"
-                        + "standard includes are loaded";
-                ErrorForUserDisplayer.displayError(message);
-                loadStandardIncludes();
-                break;
-            }
-            //check right format for every line
+        findErrorLinesAndSubtractThemFromTheCode();
+        if (errorsFound) {
+            String message = "User include file contains errors.\n"
+                    + "It is located here: " + file.getAbsolutePath() + "\n"
+                    + "standard includes are loaded";
+            ErrorForUserDisplayer.displayError(message);
+            loadStandardIncludes();
         }
     }
 
     private void loadStandardIncludes() {
+        code.clear();
         code.addAll(Arrays.asList(STANDARDINCLUDES));
+    }
+
+    private void findErrorLinesAndSubtractThemFromTheCode() {
+        ArrayList<String> testCode = new ArrayList<>();
+        testCode.addAll(code);
+        testCode.add("int main(int argc, char *argv[]) {");
+        testCode.add("}");
+        errorList = DeepErrorChecker.checkCodeForErrors(testCode);
+        if (!errorList.isEmpty()) {
+            System.out.println(errorList.get(0).getLine());
+            errorsFound = true;
+            // adds the line that caused the error to the errorLinesArray
+            int errorLineNumber = errorList.get(0).getLine();
+            String errorLine = testCode.get(errorLineNumber);
+            code.remove(errorLineNumber);
+            errorLines.add(errorLine);
+            findErrorLinesAndSubtractThemFromTheCode();
+        }
+
     }
 
 }
