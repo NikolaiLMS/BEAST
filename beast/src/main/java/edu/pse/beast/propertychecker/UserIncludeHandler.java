@@ -107,12 +107,13 @@ public class UserIncludeHandler {
         testCode.addAll(code);
         testCode.add("int main(int argc, char *argv[]) {");
         testCode.add("}");
+        
         errorList = DeepErrorChecker.checkCodeForErrors(testCode);
         if (!errorList.isEmpty()) {
             System.out.println(errorList.get(0).getLine());
             errorsFound = true;
             // adds the line that caused the error to the errorLinesArray
-            int errorLineNumber = errorList.get(0).getLine();
+            int errorLineNumber = errorList.get(0).getLine() - 1;
             String errorLine = testCode.get(errorLineNumber);
             code.remove(errorLineNumber);
             errorLines.add(errorLine);

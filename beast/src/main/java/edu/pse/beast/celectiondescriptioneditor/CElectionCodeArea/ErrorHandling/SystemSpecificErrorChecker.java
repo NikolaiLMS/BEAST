@@ -27,7 +27,6 @@ public abstract class SystemSpecificErrorChecker {
         //clear the folder where the files that get checked get saved to, because sometimes they
         //persist from the last time BEAST was run
         try {
-            System.out.println("clean");
             FileUtils.cleanDirectory(new File(SuperFolderFinder.getSuperFolder() + pathToTempFolder));
         } catch (IOException e) {
             // TODO Auto-generated catch block
