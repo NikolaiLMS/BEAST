@@ -5,6 +5,7 @@
  */
 package edu.pse.beast.propertychecker;
 
+import edu.pse.beast.toolbox.UserIncludeHandler;
 import edu.pse.beast.datatypes.booleanExpAST.BooleanExpListNode;
 import edu.pse.beast.datatypes.electiondescription.ElectionDescription;
 import edu.pse.beast.datatypes.electiondescription.ElectionTypeContainer;

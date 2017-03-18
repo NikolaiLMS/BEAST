@@ -3,13 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.pse.beast.propertychecker;
+package edu.pse.beast.toolbox;
 
 import edu.pse.beast.celectiondescriptioneditor.CElectionCodeArea.ErrorHandling.DeepErrorChecker;
 import edu.pse.beast.codearea.ErrorHandling.CodeError;
-import edu.pse.beast.toolbox.ErrorForUserDisplayer;
-import edu.pse.beast.toolbox.FileLoader;
-import edu.pse.beast.toolbox.SuperFolderFinder;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -92,6 +89,7 @@ public class UserIncludeHandler {
             String message = "User include file contains errors.\n"
                     + "It is located here: " + file.getAbsolutePath() + "\n"
                     + "standard includes are loaded";
+            message += errorLines.get(0);
             ErrorForUserDisplayer.displayError(message);
             loadStandardIncludes();
         }
