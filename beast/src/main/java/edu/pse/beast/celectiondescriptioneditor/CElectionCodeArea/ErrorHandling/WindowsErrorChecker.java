@@ -113,7 +113,7 @@ public class WindowsErrorChecker extends SystemSpecificErrorChecker {
                         }
                     }
                     
-                    codeErrors.add(CCodeErrorFactory.generateCompilterError(lineNumber, -1, varName, message));
+                    codeErrors.add(CCodeErrorFactory.generateCompilerError(lineNumber, -1, varName, message));
 
 
                 } catch (NumberFormatException e) {

@@ -103,7 +103,7 @@ public class LinuxErrorChecker extends SystemSpecificErrorChecker {
 							varName = message.split("‘")[1].split("’")[0];
 						}
 
-						codeErrors.add(CCodeErrorFactory.generateCompilterError(lineNumber, linePos, varName, message));
+						codeErrors.add(CCodeErrorFactory.generateCompilerError(lineNumber, linePos, varName, message));
 
 					} catch (NumberFormatException e) {
 						ErrorLogger.log("can't parse the current error line from gcc");
@@ -127,7 +127,7 @@ public class LinuxErrorChecker extends SystemSpecificErrorChecker {
 						
 						message = "Missing return";
 
-						codeErrors.add(CCodeErrorFactory.generateCompilterError(lineNumber, linePos, varName, message));
+						codeErrors.add(CCodeErrorFactory.generateCompilerError(lineNumber, linePos, varName, message));
 
 					} catch (NumberFormatException e) {
 						ErrorLogger.log("can't parse the current error line from gcc");

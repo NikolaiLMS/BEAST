@@ -19,11 +19,9 @@ import java.util.ArrayList;
  */
 public class CVariableErrorFinder implements ErrorFinder {
     private final JTextPane pane;
-    private final DeepErrorChecker errorchecker;
     
     public CVariableErrorFinder(JTextPane pane) {
         this.pane = pane;
-        this.errorchecker = new DeepErrorChecker();
     }
     
     @Override
@@ -37,7 +35,7 @@ public class CVariableErrorFinder implements ErrorFinder {
         for (int i = 0; i < codeSep.length; i++) {
             seperated.add(codeSep[i]);
         }
-        ArrayList<CodeError> found = new ArrayList<>(errorchecker.checkCodeForErrors(seperated));
+        ArrayList<CodeError> found = new ArrayList<>(DeepErrorChecker.checkCodeForErrors(seperated));
         return found;
     }
     
