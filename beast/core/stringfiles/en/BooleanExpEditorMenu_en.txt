@@ -1,0 +1,34 @@
+fileMenu : File
+new : New property
+load : Open
+save : Save
+save_as : Save as
+editMenu : Edit
+undo : Undo
+redo : Redo
+cut : Cut
+copy : Copy
+paste : Paste
+editorMenu : Editor
+options : Options
+macroMenu : Macros
+elect : ELECT
+votes : VOTES()
+voterAtPos : VOTER_AT_POS()
+candAtPos : CAND_AT_POS()
+seatAtPos : SEAT_AT_POS()
+forAllVoters : FOR_ALL_VOTERS()
+forAllCandidates : FOR_ALL_CANDIDATES()
+forAllSeats : FOR_ALL_SEATS()
+existsOneVoter : EXISTS_ONE_VOTER()
+existsOneCandidate : EXISTS_ONE_CANDIDATE()
+existsOneSeat : EXISTS_ONE_SEAT()
+voteSumForCandidate : VOTE_SUM_FOR_CANDIDATE()
+voteSumForUniqueCandidate : VOTE_SUM_FOR_UNIQUE_CANDIDATE()
+constantsMenu : Constants
+numberOfVoters : Number of voters (V)
+numberOfCandidates : Number of candidates (C)
+numberOfSeats : Number of seats (S)
+codeMenu : Code
+staticErrorFinding : Static error search
+pathToLangHelp : core/Helpfiles/BooleanExpLang/en/BooleanExpHelp.html

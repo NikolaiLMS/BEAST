@@ -5,13 +5,12 @@
  */
 package edu.pse.beast.codearea.InputToCode;
 
-import java.awt.event.KeyEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.text.BadLocationException;
+import java.awt.event.KeyEvent;
 
 /**
- *
+ * This class is used by the userinputhandler to pass user input to the 
+ * right methods of userinserttocode
  * @author Holger-Desktop
  */
 public class CodeInputHandler {
@@ -30,12 +29,21 @@ public class CodeInputHandler {
         }  
     }
     
-    public void handleKey(KeyEvent ke) {        
+    /**
+     * takes the given key event and passes it on to the right method in 
+     * userinserttocode. Ex: Enter key -> it calls enterNewline()
+     * @param ke the keyevent to be processed by userinserttocode
+     */
+    public void handleCodeKey(KeyEvent ke) {        
         try{
             if(ke.getKeyCode()== KeyEvent.VK_ENTER || ke.getKeyChar() == '\n') {
                 insertToCode.insertNewline();
             } else if(ke.getKeyCode() == KeyEvent.VK_TAB || ke.getKeyChar() == '\t') {
-                insertToCode.insertTab();
+                if(ke.isShiftDown()) {
+                    insertToCode.removeTab();
+                } else {                    
+                    insertToCode.insertTab();
+                }
             } else if(ke.getKeyCode() == KeyEvent.VK_BACK_SPACE || ke.getKeyChar() == '\b') {
                 insertToCode.removeToTheLeft();
             } else if(ke.getKeyCode() == KeyEvent.VK_SPACE || ke.getKeyChar() != ''){            

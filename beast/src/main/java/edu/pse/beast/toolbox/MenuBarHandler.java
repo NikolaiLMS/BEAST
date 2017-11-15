@@ -7,10 +7,11 @@ package edu.pse.beast.toolbox;
 
 import edu.pse.beast.highlevel.DisplaysStringsToUser;
 import edu.pse.beast.stringresource.StringResourceLoader;
+
+import javax.swing.*;
 import java.util.ArrayList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  *
@@ -23,12 +24,28 @@ public abstract class MenuBarHandler implements DisplaysStringsToUser {
      */
     protected JMenuBar createdMenuBar;
 
-    private String[] headingIds;
-    private ArrayList<ArrayList<ActionIdAndListener>> actionIDAndListener;
+    private final String[] headingIds;
+    private final ArrayList<ArrayList<ActionIdAndListener>> actionIDAndListener;
     private JMenu[] createdMenus;
-    private ArrayList<ArrayList<JMenuItem>> createdItems = new ArrayList<>();
+    private final ArrayList<ArrayList<JMenuItem>> createdItems = new ArrayList<>();
     private StringResourceLoader currentResourceLoader;
 
+    private class MenuHeadingSorter implements Comparator<String> {
+        private String[] standardIdOrder = {"file", "edit", "code"};
+        @Override
+        public int compare(String lhs, String rhs) {
+            Integer lhsPos = findInarr(lhs);
+            int rhsPos = findInarr(rhs);
+            return lhsPos.compareTo(rhsPos);
+        }
+
+        private int findInarr(String s) {
+            for (int i = 0; i < standardIdOrder.length; i++) {
+                if(s.contains(standardIdOrder[i])) return i;
+            }
+            return standardIdOrder.length;
+        }
+    }
     /**
      * 
      * @param headingIds
@@ -40,6 +57,7 @@ public abstract class MenuBarHandler implements DisplaysStringsToUser {
      */
     public MenuBarHandler(String[] headingIds, ArrayList<ArrayList<ActionIdAndListener>> actionIDAndListener,
             StringResourceLoader resLoader) {
+        Arrays.sort(headingIds, new MenuHeadingSorter());
         this.headingIds = headingIds;
         this.actionIDAndListener = actionIDAndListener;
         this.currentResourceLoader = resLoader;
@@ -83,7 +101,6 @@ public abstract class MenuBarHandler implements DisplaysStringsToUser {
 
                 currentMenu.add(currentItem);
             }
-
             createdMenuBar.add(currentMenu);
         }
     }

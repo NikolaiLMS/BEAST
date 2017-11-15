@@ -1,40 +1,57 @@
 package edu.pse.beast.propertychecker;
 
+
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import javax.sound.midi.ControllerEventListener;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import edu.pse.beast.datatypes.ElectionCheckParameter;
-import edu.pse.beast.datatypes.TimeOut;
-import edu.pse.beast.datatypes.descofvoting.ElectionDescription;
-import edu.pse.beast.datatypes.descofvoting.ElectionTypeContainer;
-import edu.pse.beast.datatypes.internal.InternalTypeContainer;
-import edu.pse.beast.datatypes.internal.InternalTypeRep;
-import edu.pse.beast.datatypes.propertydescription.FormalPropertiesDescription;
-import edu.pse.beast.datatypes.propertydescription.PostAndPrePropertiesDescription;
-import edu.pse.beast.datatypes.propertydescription.SymbolicVariableList;
-import toBeImplemented.implElectionDescriptionSource;
-import toBeImplemented.implParameterSource;
-import toBeImplemented.implPropertyDescriptionSource;
 
 public class CheckerFactoryFactoryTest {
 
     @Before
     public void setUp() {
+        
     }
 
-    @After
-    public void tearDown() {
+    @Test
+    public void createSuccess() {
+        PropertyChecker checker = CheckerFactoryFactory.createPropertyChecker("cbmc");
+        assertNotNull(checker);
     }
 
+    @Test
+    public void createFailure() {
+        assertNull(CheckerFactoryFactory.createPropertyChecker("nicht_cbmc"));
+    }
+    
+    @Test
+    public void resultSuccess() {
+        List<Result> result = CheckerFactoryFactory.getMatchingResult("cbmc", 1);
+        assertNotNull(result);
+        assertTrue(result.get(0) instanceof CBMCResult);
+    }
+    
+    @Test
+    public void resultFailure() {
+        PropertyChecker checker = (PropertyChecker) CheckerFactoryFactory.getMatchingResult("nicht_cbmc", 1);
+        assertNull(checker);
+    }
+    
+    @Test
+    public void createCheckerfactorySuccess() {
+        CheckerFactory factory = CheckerFactoryFactory.getCheckerFactory("cbmc", null, null, null, null, null);
+        
+        assertNotNull(factory);
+        
+        assertTrue(factory instanceof CBMCProcessFactory);
+    }
+    
+    @Test
+    public void createCheckerfactoryFailure() {
+        CheckerFactory factory = CheckerFactoryFactory.getCheckerFactory("nicht_cbmc", null, null, null, null, null);
+        
+        assertNull(factory);
+    }
 }

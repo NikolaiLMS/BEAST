@@ -7,12 +7,13 @@ package edu.pse.beast.codearea.InputToCode.NewlineInserter;
 
 import edu.pse.beast.codearea.InputToCode.LineBeginningTabsHandler;
 import edu.pse.beast.codearea.InputToCode.TabInserter;
-import edu.pse.beast.codearea.InputToCode.UserInsertToCode;
-import javax.swing.JTextPane;
+
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
 
 /**
- *
+ * This interface is implemented by all classes which insert linebreaks
+ * in different ways
  * @author Holger-Desktop
  */
 public interface NewlineInserter {

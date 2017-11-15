@@ -1,72 +1,84 @@
 package edu.pse.beast.propertylist.View;
 
-import java.awt.BorderLayout;
-import java.awt.MenuBar;
+import edu.pse.beast.booleanexpeditor.UserActions.LoadPropsUserAction;
+import edu.pse.beast.highlevel.DisplaysStringsToUser;
+import edu.pse.beast.propertylist.PropertyList;
+import edu.pse.beast.propertylist.Model.PLModel;
+import edu.pse.beast.propertylist.Model.PropertyItem;
+import edu.pse.beast.propertylist.Model.ResultType;
+import edu.pse.beast.stringresource.PropertyListStringResProvider;
+import edu.pse.beast.stringresource.StringLoaderInterface;
+import edu.pse.beast.stringresource.StringResourceLoader;
+import edu.pse.beast.toolbox.RepaintThread;
+import edu.pse.beast.toolbox.SuperFolderFinder;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-
-import edu.pse.beast.celectiondescriptioneditor.GUI.CCodeEditorGUI;
-import edu.pse.beast.highlevel.DisplaysStringsToUser;
-import edu.pse.beast.propertylist.PLControllerInterface;
-import edu.pse.beast.propertylist.PropertyItem;
-import edu.pse.beast.propertylist.PropertyList;
-import edu.pse.beast.propertylist.PropertyListMenuBarHandler;
-import edu.pse.beast.propertylist.Model.PLModel;
-import edu.pse.beast.propertylist.Model.PLModelInterface;
-import edu.pse.beast.stringresource.PropertyListStringResProvider;
-import edu.pse.beast.stringresource.StringLoaderInterface;
-import edu.pse.beast.stringresource.StringResourceLoader;
-import edu.pse.beast.toolbox.ObjectRefsForBuilder;
-
 /**
-*
-* @author Justin
-*/
-public class PropertyListWindow extends JFrame implements DisplaysStringsToUser, Observer, ActionListener {
+ * This class is the view of PropertyList.
+ * 
+ * @author Justin
+ */
+public class PropertyListWindow extends JFrame implements DisplaysStringsToUser, Observer {
+
+	private static final long serialVersionUID = 1L;
+    private PLModel model;
+	private PropertyList controller;
+
+	private String title;
+	private String currentlyLoadedPropertyListName;
+	private StringLoaderInterface sli;
+	private boolean reactsToInput = true;
 	
-	PLModelInterface model;
-	PLControllerInterface controller;
-	
+	private boolean showsMarginBox = false;
+
 	private JMenuBar menuBar;
 	private JMenu menuFile;
 	private JMenu menuEdit;
 	private JToolBar toolBar = new JToolBar();
 	private JPanel panel;
 	private JPanel endpanel;
-	
-	private ArrayList<ListItem> items = new ArrayList<ListItem>();
-	private JButton addNewButton = new JButton();
-	
-	private NewPropertyWindow newPropWindow;
 
-	public PropertyListWindow(PLControllerInterface controller, PLModelInterface model) {
+	private ArrayList<ListItem> items = new ArrayList<ListItem>();
+	private ListItem nextToPresent;
+
+	private JButton addNewButton = new JButton();
+	private JButton addCreatedButton = new JButton();
+
+	private final String pathToAdd = "/core/images/other/add.png";
+	private final ImageIcon addIcon = new ImageIcon(SuperFolderFinder.getSuperFolder() + pathToAdd);
+
+	/**
+	 * Constructor
+	 * 
+	 * @param controller
+	 *            The PropertyList controller
+	 * @param model
+	 *            The model of PropertyList
+	 */
+	public PropertyListWindow(PropertyList controller, PLModel model) {
 		this.controller = controller;
 		this.model = model;
 		model.addObserver(this);
 		init();
+		Thread t = new Thread(new RepaintThread(this));
+		t.start();
 	}
-	
-	
+
 	private void init() {
-		newPropWindow = new NewPropertyWindow(controller, model);
-		
-		// setFrame(new JFrame());
 		this.setLayout(new BorderLayout());
-		setBounds(600, 100, 500, 300);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("Property List");
-		
+		setBounds(700, 100, 500, 500);
+		setTitle("PropertyList");
+
 		menuBar = new JMenuBar();
 		menuFile = new JMenu();
 		menuFile.setText("Menu");
@@ -75,96 +87,210 @@ public class PropertyListWindow extends JFrame implements DisplaysStringsToUser,
 		menuBar.add(menuFile);
 		menuBar.add(menuEdit);
 		this.setJMenuBar(menuBar);
-		
-		
+
 		toolBar.setFloatable(false);
 		toolBar.setRollover(true);
 		getContentPane().add(toolBar, BorderLayout.NORTH);
-		
+
 		panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		getContentPane().add(panel, BorderLayout.CENTER);
-		
-		if (items.isEmpty()) items.add(new ListItem(controller, model));
-		for (ListItem item : items) {
-			panel.add(item, BorderLayout.CENTER);
+		if (!items.isEmpty()) {
+			for (ListItem item : items) {
+				panel.add(item, BorderLayout.CENTER);
+			}
 		}
-		
+
+		JScrollPane jsp = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.add(jsp);
+
 		endpanel = new JPanel();
 		getContentPane().add(endpanel, BorderLayout.SOUTH);
-		
-		addNewButton.setIcon(new ImageIcon(getClass().getResource("/images/other/add.png")));
-		addNewButton.addActionListener(new ActionListener() {
+
+		addNewButton.setIcon(addIcon);
+		addNewButton.addActionListener(new ActionListener() { // adds a new property
 			public void actionPerformed(ActionEvent e) {
-				addNewPropertyAction(e);
+				if (reactsToInput)
+					controller.addNewProperty();
 			}
 
 		});
 		endpanel.add(addNewButton, BorderLayout.LINE_END);
-	}
-	
-	
-	public JToolBar getToolbar() {
-    	return toolBar;
-    }
-	public ArrayList<ListItem> getList() {
-		return items;
-	}
-	public void setList(ArrayList<ListItem> items) {
-		this.items = items;
+
+		addCreatedButton.setIcon(addIcon);
+		addCreatedButton.addActionListener(new ActionListener() { // adds a property that is loaded
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (reactsToInput) {
+					LoadPropsUserAction load = new LoadPropsUserAction(controller.getEditor(), controller);
+					load.loadIntoPropertyList();
+				}
+			}
+		});
+		endpanel.add(addCreatedButton, BorderLayout.LINE_END);
+
+		//setResizable(false);
+
+		this.addWindowFocusListener(new WindowFocusListener() {
+			@Override
+			public void windowGainedFocus(WindowEvent we) {
+				for (ListItem item : items) {
+					if (item.resWindow.isVisible())
+						item.resWindow.setVisible(true);
+				}
+			}
+
+			@Override
+			public void windowLostFocus(WindowEvent we) {
+			}
+		});
+
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent we) {
+				for (ListItem item : items) {
+					item.resWindow.setVisible(false);
+				}
+			}
+		});
 	}
 
-	
-	public void addItem(PropertyItem prop) {
-		ListItem addedItem = new ListItem(controller, model, prop);
-		panel.add(addedItem, BorderLayout.CENTER);
-	}
-	
-	private void updateItems() {
-		panel.repaint();
-		for (ListItem item : items) {
-			panel.add(item, BorderLayout.CENTER);
+	/**
+	 * Resets the name attribute because the name change for a PropertyItem was
+	 * rejected.
+	 * 
+	 * @param prop
+	 *            The PropertyItem that couldn't be changed
+	 */
+	public void rejectNameChange(PropertyItem prop) {
+		controller.changeName(prop, prop.getDescription().getName());
+		for (ListItem li : items) {
+			if (prop.equals(li.getPropertyItem())) {
+				updateItems(model.getPropertyList());
+			}
 		}
 	}
-	
-	private void addNewPropertyAction(ActionEvent e) {
-		newPropWindow.toggleVisibility();
+
+	/**
+	 * Stops reacting to user input.
+	 */
+	public void stopReacting() {
+		setReactsToInput(false);
+		this.setEnabled(false);
 	}
 
-	
+	/**
+	 * Resumes reacting to user input.
+	 */
+	public void resumeReacting() {
+		setReactsToInput(true);
+		this.setEnabled(true);
+	}
+
 	@Override
 	public void updateStringRes(StringLoaderInterface sli) {
+		this.sli = sli;
 		PropertyListStringResProvider provider = sli.getPropertyListStringResProvider();
 		StringResourceLoader other = provider.getOtherStringRes();
-		StringResourceLoader menu = provider.getMenuStringRes();
-		StringResourceLoader toolbarTip = provider.getToolbarTipStringRes();
-		
-		this.setTitle(other.getStringFromID("title"));
-		
-	}
 
+		title = other.getStringFromID("title");
+		setTitle(title);
+		this.addNewButton.setText(other.getStringFromID("newButton"));
+		this.addCreatedButton.setText(other.getStringFromID("createdButton"));
+
+		for (ListItem item : items) {
+			item.updateStringRes(sli);
+		}
+		this.revalidate();
+		this.repaint();
+	}
 
 	@Override
 	public void update(Observable o, Object obj) {
-		ArrayList<PropertyItem> list = model.getList();
-		
-		// check if new property was added to model
-		if (list.size() > items.size()) addItem(list.get(model.getDirtyIndex()));
-		
-		/*ArrayList<PropertyItem> list = ((PLModel)o).getDescr();
-		items = new ArrayList<ListItem>();
-		for (PropertyItem item : list) {
-			items.add(new ListItem(controller, model, item));
-		}
-		updateItems();*/
+		updateItems(model.getPropertyList());
 	}
 
-	//MVC
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+	// private methods
+	private void setReactsToInput(boolean reacts) {
+		reactsToInput = reacts;
+		for (ListItem item : items)
+			item.setReactsToInput(reacts);
+	}
+
+	private void updateItems(ArrayList<PropertyItem> propertyList) {
+		for (ListItem item : items) item.resWindow.setVisible(false);
 		
+		items = new ArrayList<ListItem>();
+		panel.removeAll();
+		panel.revalidate();
+		this.validate();
+
+		for (PropertyItem propertyItem : propertyList) {
+			ListItem current = new ListItem(controller, model, propertyItem);
+			
+			current.setMarginComputationBoxVisible(showsMarginBox);
+			
+			if (propertyItem.getResultType() == ResultType.TESTED)
+				this.setNextToPresent(current);
+			current.updateStringRes(sli);
+			items.add(current);
+			panel.add(current, BorderLayout.CENTER);
+		}
+		panel.revalidate();
+		panel.repaint();
+	}
+
+	// getter and setter
+	public ListItem getNextToPresent() {
+		return nextToPresent;
+	}
+
+	public void setNextToPresent(ListItem nextToPresent) {
+		this.nextToPresent = nextToPresent;
+	}
+
+	/**
+	 * Adds the given string to the window title, used for displaying name of
+	 * currently loaded PropertyList object
+	 * 
+	 * @param propListName
+	 *            name of the currently loaded PropertyList object
+	 */
+	public void setWindowTitle(String propListName) {
+		this.setCurrentlyLoadedPropertyListName(propListName);
+		this.setTitle(title + " " + propListName + " - BEAST");
+	}
+
+	public String getCurrentlyLoadedPropertyListName() {
+		return currentlyLoadedPropertyListName;
+	}
+
+	public void setCurrentlyLoadedPropertyListName(String currentlyLoadedPropertyListName) {
+		this.currentlyLoadedPropertyListName = currentlyLoadedPropertyListName;
+	}
+
+	public JToolBar getToolbar() {
+		return toolBar;
+	}
+
+	public JMenuBar getMainMenuBar() {
+		return menuBar;
+	}
+
+	public ArrayList<ListItem> getList() {
+		return items;
+	}
+
+	public void setList(ArrayList<ListItem> items) {
+		this.items = items;
 	}
 	
+	public JButton getAddNewButton() {
+		return addNewButton;
+	}
 	
-	
+	public void setShowsMarginBox(boolean newValue) {
+		this.showsMarginBox = newValue;
+	}
 }

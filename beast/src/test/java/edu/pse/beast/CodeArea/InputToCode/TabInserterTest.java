@@ -6,15 +6,12 @@
 package edu.pse.beast.CodeArea.InputToCode;
 
 import edu.pse.beast.codearea.InputToCode.TabInserter;
-import edu.pse.beast.codearea.InputToCode.LineHandler;
-import javax.swing.JTextPane;
+import org.junit.*;
+
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -23,7 +20,6 @@ import static org.junit.Assert.*;
 public class TabInserterTest {
     
     private TabInserter ins;
-    private LineHandler lineHandler;
     private JTextPane pane;
     
     public TabInserterTest() {
@@ -40,8 +36,7 @@ public class TabInserterTest {
     @Before
     public void setUp() {
         pane = new JTextPane();
-        lineHandler = new LineHandler(pane);
-        ins = new TabInserter(pane, lineHandler);
+        ins = new TabInserter(pane);
     }
     
     @After
@@ -74,8 +69,7 @@ public class TabInserterTest {
         assertEquals(after, code);
         
         pane = new JTextPane();
-        lineHandler = new LineHandler(pane);
-        ins = new TabInserter(pane, lineHandler);
+        ins = new TabInserter(pane);
         
         insert = "0123";
         pane.getStyledDocument().insertString(0, insert, null);
@@ -90,9 +84,9 @@ public class TabInserterTest {
     @Test
     public void testAddAfterNewline() throws BadLocationException {
         pane.getStyledDocument().insertString(0, "\n", null);
-        assertEquals("\r\n", pane.getText());
+        assertEquals("\n", pane.getStyledDocument().getText(0, pane.getStyledDocument().getLength()));
         ins.insertTabAtPos(1);
-        assertEquals("\r\n" + "        ", pane.getText());
+        assertEquals("\n" + "        ", pane.getStyledDocument().getText(0, pane.getStyledDocument().getLength()));
     }
   
     

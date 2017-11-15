@@ -1,21 +1,18 @@
 package edu.pse.beast.booleanexpeditor.booleanExpCodeArea;
 
-import edu.pse.beast.booleanexpeditor.booleanExpCodeArea.autocompletion.BooleanExpAutoCompletionSrc;
 import edu.pse.beast.booleanexpeditor.booleanExpCodeArea.errorFinder.BooleanExpEditorGrammarErrorFinder;
 import edu.pse.beast.booleanexpeditor.booleanExpCodeArea.errorFinder.BooleanExpEditorVariableErrorFinder;
 import edu.pse.beast.codearea.CodeArea;
-
-import java.util.ArrayList;
 
 /**
  * Class extending CodeArea Class of package codearea and giving it extra functionality specific to BooleanExpEditor.
  * @author Nikolai
  */
 public class BooleanExpCodeArea extends CodeArea {
-    private BooleanExpANTLRHandler antlrHandler;
-    private BooleanExpEditorGrammarErrorFinder grammarErrorFinder;
-    private BooleanExpEditorVariableErrorFinder variableErrorFinder;
-    private BooleanExpAutoCompletionSrc autoCompletionSrc;
+    private final BooleanExpANTLRHandler antlrHandler;
+    private final BooleanExpEditorGrammarErrorFinder grammarErrorFinder;
+    private final BooleanExpEditorVariableErrorFinder variableErrorFinder;
+    private final BooleanExpSyntaxHL booleanExpSyntaxHL;
 
     /**
      * Constructor
@@ -23,21 +20,34 @@ public class BooleanExpCodeArea extends CodeArea {
      * @param antlrHandler BooleanExpAntlrHandler object
      * @param variableErrorFinder the BooleanExpEditorVariableErrorFinder object
      * @param grammarErrorFinder the BooleanExpEditorGrammarErrorFinder object
-     * @param autoCompletionSrc the BooleanExpEditorAutocompletionSrc object
      */
     BooleanExpCodeArea(CodeArea codeArea,
-                              BooleanExpANTLRHandler antlrHandler,
+                              BooleanExpANTLRHandler aHandler,
                               BooleanExpEditorVariableErrorFinder variableErrorFinder,
-                              BooleanExpEditorGrammarErrorFinder grammarErrorFinder,
-    BooleanExpAutoCompletionSrc autoCompletionSrc) {
+                              BooleanExpEditorGrammarErrorFinder grammarErrorFinder) {
         super(codeArea);
-        this.antlrHandler = antlrHandler;
+        this.antlrHandler = aHandler;
         this.grammarErrorFinder = grammarErrorFinder;
         this.variableErrorFinder = variableErrorFinder;
-        this.autoCompletionSrc = autoCompletionSrc;
+        errorCtrl.addErrorFinder(grammarErrorFinder);
+        errorCtrl.addErrorFinder(variableErrorFinder);
+        booleanExpSyntaxHL = new BooleanExpSyntaxHL(antlrHandler, syntaxHL);
     }
 
-    public ArrayList<Error> getErrors() {
-        return new ArrayList<Error>();
+    /**
+     * Getter for the BooleanExpEditorGrammarErrorFinder object
+     * @return grammarErrorFinder
+     */
+    public BooleanExpEditorGrammarErrorFinder getGrammarErrorFinder() {
+        return grammarErrorFinder;
     }
+
+    /**
+     * Getter for the BooleanExpEditorVariableErrorFinder object
+     * @return variableErrorFinder
+     */
+    public BooleanExpEditorVariableErrorFinder getVariableErrorFinder() {
+        return variableErrorFinder;
+    }    
+     
 }

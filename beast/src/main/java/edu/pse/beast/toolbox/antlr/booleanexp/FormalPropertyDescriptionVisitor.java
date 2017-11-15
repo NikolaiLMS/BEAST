@@ -1,6 +1,4 @@
-package edu.pse.beast.toolbox.antlr.booleanexp;
-
-// Generated from D:\studium\PSE\Implementierung\impl rep 01_23\PSE-Wahlverfahren-Implementierung\beast\src\main\resources\antlrgrammars\FormalPropertyDescription.g4 by ANTLR 4.5.3
+package edu.pse.beast.toolbox.antlr.booleanexp;// Generated from FormalPropertyDescription.g4 by ANTLR 4.5.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -66,6 +64,36 @@ public interface FormalPropertyDescriptionVisitor<T> extends ParseTreeVisitor<T>
 	 */
 	T visitNumberExpression(FormalPropertyDescriptionParser.NumberExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#typeByPosExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeByPosExp(FormalPropertyDescriptionParser.TypeByPosExpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#voterByPosExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVoterByPosExp(FormalPropertyDescriptionParser.VoterByPosExpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#candByPosExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCandByPosExp(FormalPropertyDescriptionParser.CandByPosExpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#seatByPosExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSeatByPosExp(FormalPropertyDescriptionParser.SeatByPosExpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#integer}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInteger(FormalPropertyDescriptionParser.IntegerContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#electExp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -77,6 +105,12 @@ public interface FormalPropertyDescriptionVisitor<T> extends ParseTreeVisitor<T>
 	 * @return the visitor result
 	 */
 	T visitVoteExp(FormalPropertyDescriptionParser.VoteExpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#passType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPassType(FormalPropertyDescriptionParser.PassTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#constantExp}.
 	 * @param ctx the parse tree
@@ -90,11 +124,29 @@ public interface FormalPropertyDescriptionVisitor<T> extends ParseTreeVisitor<T>
 	 */
 	T visitVoteSumExp(FormalPropertyDescriptionParser.VoteSumExpContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#voteSumUniqueExp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVoteSumUniqueExp(FormalPropertyDescriptionParser.VoteSumUniqueExpContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#passSymbVar}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitPassSymbVar(FormalPropertyDescriptionParser.PassSymbVarContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#passPosition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPassPosition(FormalPropertyDescriptionParser.PassPositionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#passByPos}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPassByPos(FormalPropertyDescriptionParser.PassByPosContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link FormalPropertyDescriptionParser#symbolicVarExp}.
 	 * @param ctx the parse tree

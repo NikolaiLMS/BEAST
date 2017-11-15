@@ -1,16 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package edu.pse.beast.highlevel;
 
 import edu.pse.beast.stringresource.StringLoaderInterface;
 
 /**
- *
+ * This interface is implemented by every View which displays Strings. It is used
+ * to switch between different languages easily.
  * @author Holger-Desktop
  */
 public interface DisplaysStringsToUser {
-    public void updateStringRes(StringLoaderInterface stringResIF);
+    /**
+     * Updates all displayed String to match the chosen StringResource.
+     * @param stringResIF StringLoaderInterface with the new Strings for display
+     */
+    void updateStringRes(StringLoaderInterface stringResIF);
 }

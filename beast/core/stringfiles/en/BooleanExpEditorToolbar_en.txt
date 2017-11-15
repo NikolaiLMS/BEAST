@@ -1,0 +1,10 @@
+new : New property
+load : Open
+save : Save
+save_as : Save as
+undo : Undo
+redo : Redo
+cut : Cut
+copy : Copy
+paste : Paste
+showHelpToUser : show language help

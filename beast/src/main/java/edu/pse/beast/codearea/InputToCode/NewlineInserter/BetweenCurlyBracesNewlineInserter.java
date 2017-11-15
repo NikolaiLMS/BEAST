@@ -7,11 +7,17 @@ package edu.pse.beast.codearea.InputToCode.NewlineInserter;
 
 import edu.pse.beast.codearea.InputToCode.LineBeginningTabsHandler;
 import edu.pse.beast.codearea.InputToCode.TabInserter;
-import javax.swing.JTextPane;
+
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
 
 /**
- *
+ * Inserts newlines between two curly braces by adding two new lines
+ * and centering the caret position between them:
+ * {|} becomes
+ * {
+ *     |
+ * }
  * @author Holger-Desktop
  */
 public class BetweenCurlyBracesNewlineInserter implements NewlineInserter {

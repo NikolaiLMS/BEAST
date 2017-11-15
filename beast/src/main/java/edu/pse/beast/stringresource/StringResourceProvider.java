@@ -1,12 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ * To change this license header, choose License Headers file Project Properties.
  * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * and open the template file the editor.
  */
 package edu.pse.beast.stringresource;
 
-import java.io.File;
 import edu.pse.beast.toolbox.ErrorLogger;
+import edu.pse.beast.toolbox.FileLoader;
+import edu.pse.beast.toolbox.SuperFolderFinder;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
 
 /**
  *
@@ -14,10 +19,6 @@ import edu.pse.beast.toolbox.ErrorLogger;
  */
 public abstract class StringResourceProvider {
 
-    /**
-     * the path containing all languagefolders with the textfiles
-     */
-    protected String relativePath;
     /**
      * languageId. Choose "de" for german
      */
@@ -28,12 +29,9 @@ public abstract class StringResourceProvider {
      * to call it yourself
      *
      * @param languageId the language. Choose "de" for german
-     * @param relativePath the path containing all languagefolders with the
-     * textfiles
      */
-    public StringResourceProvider(String languageId, String relativePath) {
+    public StringResourceProvider(String languageId) {
         this.languageId = languageId;
-        this.relativePath = relativePath;
     }
 
     /**
@@ -55,18 +53,52 @@ public abstract class StringResourceProvider {
      * @param moduleName the Name of the StringResource you want
      * @return the relative fileLocation
      */
-    protected final String getFileLocationString(String moduleName) {
-        return ("stringfiles/" + languageId + "/" + moduleName + "_" + languageId + ".txt");
+    private String getFileLocationString(String moduleName) {
+        return ("/core/stringfiles/" + languageId + "/" + moduleName + "_" + languageId + ".txt");
     }
 
     /**
-     * reports Error to the class in toolbox
+     * reports Error to the class file toolbox
      *
      * @param file that has the wrongFormat
      */
-    protected static void errorFileHasWrongFormat(File file) {
-        ErrorLogger.log("The file " + file.getName() + " is not correclty formated");
+    private void errorFileHasWrongFormat(File file) {
+        ErrorLogger.log("The file " + file.getName() + " is not correctly formated");
         ErrorLogger.log("You can find and correct the file in this directory " + file.getAbsolutePath());
+    }
+
+    private void fileNotFound(File file) {
+
+        ErrorLogger.log("The file " + file.getName() + " can not be found");
+        ErrorLogger.log("The file should be in this directory " + file.getAbsolutePath());
+    }
+
+    /**
+     * This method is used to initialize the StringResourceLoaders of the
+     * subclasses
+     *
+     * @param moduleName the Name of the txt File without the language or the
+     * path
+     * @return returns the StringResourceLoader
+     */
+    protected final StringResourceLoader getStringResourceLoaderFromModuleName(String moduleName) {
+        String subFolderAndFilename = getFileLocationString(moduleName);
+        String superFolder = SuperFolderFinder.getSuperFolder();
+        String location = superFolder + subFolderAndFilename;
+        File file = new File(location);
+        {
+            LinkedList<String> inputList;
+            try {
+                inputList = FileLoader.loadFileAsString(file);
+                return new StringResourceLoader(inputList);
+            } catch (IOException ex) {
+                fileNotFound(file);
+            } catch (IndexOutOfBoundsException ie) {
+                errorFileHasWrongFormat(file);
+            }
+
+        }
+        return null;
     }
 
 }

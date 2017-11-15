@@ -6,15 +6,12 @@
 package edu.pse.beast.CodeArea.InputToCode;
 
 import edu.pse.beast.codearea.InputToCode.CurlyBracesLineBeginningTabHandler;
-import edu.pse.beast.codearea.InputToCode.LineHandler;
-import javax.swing.JTextPane;
+import org.junit.*;
+
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -24,7 +21,6 @@ public class CurlyBracesLineBeginningTabHandlerTest {
     
     private JTextPane pane;
     private CurlyBracesLineBeginningTabHandler handler;
-    private LineHandler lineHandler;
     
     public CurlyBracesLineBeginningTabHandlerTest() {
     }
@@ -40,37 +36,18 @@ public class CurlyBracesLineBeginningTabHandlerTest {
     @Before
     public void setUp() {
         pane = new JTextPane();
-        lineHandler = new LineHandler(pane);
-        handler = new CurlyBracesLineBeginningTabHandler(pane, lineHandler);
+        handler = new CurlyBracesLineBeginningTabHandler(pane);
     }
     
     @After
     public void tearDown() {
     }
 
-    /**
-     * Test of getTabsForLine method, of class CurlyBracesLineBeginningTabHandler.
-     */
-    @Test
-    public void testGetZeroTabsForLine() throws BadLocationException {
-        System.out.println("getTabsForLine");
-        String insert = "asdasd" + System.lineSeparator() + "asdasd";
-        pane.getStyledDocument().insertString(0, insert, null);
-        
-        assertEquals(15, pane.getText().length());
-        
-        int tabs = handler.getTabsForLine(0);
-        assertEquals(0, tabs);
-        
-        tabs = handler.getTabsForLine(9);
-        assertEquals(0, tabs);        
-    }
     
     @Test
     public void testGetEasyCurlyTabsForLine() throws BadLocationException {
         System.out.println("getTabsForLine");
-        String insert = "{" + System.lineSeparator() + " " + System.lineSeparator() + "}";
-        pane.getStyledDocument().insertString(0, insert, null);
+       pane.setText("{\n \n}");
         
         int tabs = handler.getTabsForLine(0);
         assertEquals(0, tabs);
@@ -88,10 +65,10 @@ public class CurlyBracesLineBeginningTabHandlerTest {
     @Test
     public void testGetTabsForLineClosingCurlyAtEnd() throws BadLocationException {
         System.out.println("getTabsForLine");
-        String insert = "{" + System.lineSeparator() + " " + System.lineSeparator() + "}";
-        pane.getStyledDocument().insertString(0, insert, null);
         
-        int tabs = handler.getTabsForLine(4);
+        pane.setText("{\n\n}");
+        
+        int tabs = handler.getTabsForLine(3);
         assertEquals(0, tabs);    
     }
     
@@ -115,15 +92,19 @@ public class CurlyBracesLineBeginningTabHandlerTest {
                                 "{" + System.lineSeparator() + 
                                     " " + System.lineSeparator() + 
                                 "}";
-        pane.getStyledDocument().insertString(0, insert, null);
-        
+        pane.setText("{\n{\n{\n \n}");
         int tabs = handler.getTabsForLine(6);
         assertEquals(3, tabs);  
         tabs = handler.getTabsForLine(7);
         assertEquals(3, tabs);    
         tabs = handler.getTabsForLine(8);
-        assertEquals(2, tabs);  
-        tabs = handler.getTabsForLine(9);
-        assertEquals(2, tabs);  
+        assertEquals(2, tabs);
+    }
+
+    /**
+     * Test of getTabsForLine method, of class CurlyBracesLineBeginningTabHandler.
+     */
+    @Test
+    public void testGetTabsForLine() {
     }
 }

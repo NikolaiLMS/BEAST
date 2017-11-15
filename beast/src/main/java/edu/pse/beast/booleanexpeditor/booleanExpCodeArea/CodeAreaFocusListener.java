@@ -6,39 +6,55 @@ import java.awt.event.FocusListener;
 /**
  * FocusListener given to the JTextPanes of the BooleanExpEditorWindow JFrame.
  * getLastFocused returns the CodeArea belonging to the last focused JTextPane.
+ * Implements FocusListener so it can be applied to the JTextPanes of the CodeAreas.
  * @author NikolaiLMS
  */
 public class CodeAreaFocusListener implements FocusListener {
     private BooleanExpCodeArea lastFocused;
-    private BooleanExpCodeArea prePropCodeArea;
-    private BooleanExpCodeArea postPropCodeArea;
+    private BooleanExpCodeArea preConditionCodeArea;
+    private BooleanExpCodeArea postConditionCodeArea;
 
-    public CodeAreaFocusListener(BooleanExpCodeArea prePropCodeArea, BooleanExpCodeArea postPropCodeArea) {
-        lastFocused = prePropCodeArea;
-        this.prePropCodeArea = prePropCodeArea;
-        this.postPropCodeArea = postPropCodeArea;
+    /**
+     * Constructor
+     * @param preConditionCodeArea CodeArea for preconditions
+     * @param postConditionCodeArea CodeArea for postconditions
+     */
+    public CodeAreaFocusListener(BooleanExpCodeArea preConditionCodeArea,
+                                 BooleanExpCodeArea postConditionCodeArea) {
+        lastFocused = preConditionCodeArea;
+        this.preConditionCodeArea = preConditionCodeArea;
+        this.postConditionCodeArea = postConditionCodeArea;
     }
 
-    public void addNewCodeAreas(BooleanExpCodeArea prePropCodeArea, BooleanExpCodeArea postPropCodeArea) {
-        this.prePropCodeArea = prePropCodeArea;
-        this.postPropCodeArea = postPropCodeArea;
-        lastFocused = prePropCodeArea;
+    /**
+     * Method that sets new BooleanExpCodeAreas
+     * @param preConditionCodeArea the new BooleanExpCodeArea for preconditions
+     * @param postConditionCodeArea the new BooleanExpCodeArea for postconditions
+     */
+    public void addNewCodeAreas(BooleanExpCodeArea preConditionCodeArea,
+                                BooleanExpCodeArea postConditionCodeArea) {
+        this.preConditionCodeArea = preConditionCodeArea;
+        this.postConditionCodeArea = postConditionCodeArea;
+        lastFocused = preConditionCodeArea;
     }
 
     @Override
     public void focusGained(FocusEvent focusEvent) {
-        if ((focusEvent.getComponent()).equals(prePropCodeArea.getPane())) {
-            lastFocused = prePropCodeArea;
+        if ((focusEvent.getComponent()).equals(preConditionCodeArea.getPane())) {
+            lastFocused = preConditionCodeArea;
         } else {
-            lastFocused = postPropCodeArea;
+            lastFocused = postConditionCodeArea;
         }
     }
 
     @Override
     public void focusLost(FocusEvent focusEvent) {
-
     }
 
+    /**
+     * Method that
+     * @return s the last focused JTextPane.
+     */
     public BooleanExpCodeArea getLastFocused() {
         return lastFocused;
     }

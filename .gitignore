@@ -39,6 +39,19 @@ $RECYCLE.BIN/
 log/
 target/
 /bin/
+/c_tempfiles/
 /beast/nbproject/
 beast/.settings/org.eclipse.jdt.core.prefs
-/c_tempfiles/
+beast/src/main/resources/c_tempfiles/*.c
+beast/core/c_tempfiles/*.c
+*.obj
+
+# Options
+*opts.txt
+beast/core/generated_c_files/*.c
+beast/core/generated_c_files/*.bat
+beast/core/generated_c_files/*.exe
+beast/core/c_tempfiles/*.c
+beast/core/c_tempfiles/*.exe
+beast/core/c_tempfiles/*.obj
+beast/core/c_tempfiles/*.bat

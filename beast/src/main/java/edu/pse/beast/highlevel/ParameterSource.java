@@ -1,6 +1,8 @@
 
 package edu.pse.beast.highlevel;
-import edu.pse.beast.datatypes.ElectionCheckParameter;
+import edu.pse.beast.datatypes.electioncheckparameter.ElectionCheckParameter;
+
+import javax.swing.*;
 
 /**
  * The ParameterSource provides access to the parameters for checking the election.
@@ -12,6 +14,7 @@ public interface ParameterSource {
      * @return ElectionCheckParameter
      */
     ElectionCheckParameter getParameter();
+    
     /**
      * Returns true if the parameters are correct.
      * @return correctness
@@ -25,4 +28,10 @@ public interface ParameterSource {
      * Resumes reacting to user input after the check is over.
      */
     void resumeReacting();
+
+    /**
+     * Returns the View of the ParameterSrc, since this is the MainWindow its used for displaying the status of the
+     * Analysis by the BEASTCommunicator.
+     */
+    JFrame getView();
 }

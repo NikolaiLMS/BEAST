@@ -5,10 +5,8 @@
  */
 package edu.pse.beast.toolbox;
 
-import java.awt.Image;
+import java.awt.*;
 import java.io.File;
-import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 
 /**
@@ -20,27 +18,32 @@ public class ImageResourceProvider {
     private static ImageResourceProvider toolbar;
     public static ImageResourceProvider getToolbarImages() {
         if(toolbar == null) {
-            String[] ids = {"new", "save", "save_as", 
-                "load", "copy", "cut", "paste", "undo", "redo",
-            "start", "stop"};
+            String[] ids = {"new", "load", "save", "save_as",
+                    "undo", "redo", "cut", "copy", "paste",
+                    "start", "stop", "showHelpToUser", "simulation"};
             toolbar =
-                    new ImageResourceProvider("images/toolbar/",
+                    new ImageResourceProvider("/core/images/toolbar/",
                     ids);
         }
         return toolbar;
     }
     
-    private HashMap<String, Image> images = new HashMap<>();
-    private String folder;
-    private String[] ids;
+    private final HashMap<String, Image> images = new HashMap<>();
+    private final String folder;
+    private final String[] ids;
     
     public ImageResourceProvider(String folder, String[] ids) {
         this.folder = folder;
         this.ids = ids;
-        for(String s : ids) {
-            String location = folder + s + ".png";
+        for(String s : this.ids) {
+            
+            File toRead =
+                    new File(SuperFolderFinder.getSuperFolder() + this.folder + s + ".png");
+            
+    //        String location = folder + s + ".png";
             Image img = null;
-            img = FileLoader.loadFileAsImage(getClass().getClassLoader().getResourceAsStream(location));
+     //       img = FileLoader.loadFileAsImage(getClass().getClassLoader().getResourceAsStream(location));
+            img = FileLoader.loadFileAsImage(toRead);
             images.put(s, img);
         }
     }

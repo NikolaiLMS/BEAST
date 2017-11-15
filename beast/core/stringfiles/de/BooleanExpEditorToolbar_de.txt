@@ -1,0 +1,10 @@
+new : Neue Eigenschaft
+load : Öffnen
+save : Speichern
+save_as : Speichern unter
+undo : Rückgängig
+redo : Wiederholen
+cut : Ausschneiden
+copy : Kopieren
+paste : Einfügen
+showHelpToUser : Hilfe für Sprache anzeigen

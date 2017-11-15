@@ -5,16 +5,13 @@
  */
 package edu.pse.beast.toolbox;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-
-
 import java.io.*;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import javax.imageio.ImageIO;
-
+import java.util.List;
 
 /**
  *
@@ -28,76 +25,99 @@ public final class FileLoader {
 
     /**
      *
-     * @param in the inputstream
+     * @param file the file that will be read
      * @return A LinkedList of String elements which are in the same order as in
      * the file
      * @throws FileNotFoundException if the file is not found it throws an
      * exception
      * @throws IOException throws Exception
      */
-    public static LinkedList<String> loadFileAsString(InputStream in) throws FileNotFoundException, IOException {
-        
-        
+    public static LinkedList<String> loadFileAsString(File file) throws FileNotFoundException, IOException {
+
         LinkedList<String> stringlist;
-        /**try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(
-                        new FileInputStream(file), "UTF8"))) { */
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        InputStream inputStream = new FileInputStream(file);
+                BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
             stringlist = new LinkedList<>();
             String line;
-            
+
             line = br.readLine();
             while (line != null) {
                 stringlist.add(line);
                 line = br.readLine();
             }
+            br.close();
         
         return stringlist;
     }
 
     /**
-     *
-     * @param in the file to be read as an image
+     * @param toRead the File you want to read
      * @return the image, if it was possible to read it. In case it couldn't be
      * read, the methode returns null
      */
-    public static BufferedImage loadFileAsImage(InputStream in) {
+    public static BufferedImage loadFileAsImage(File toRead) {
         BufferedImage toReturn = null;
         try {
-            toReturn = ImageIO.read(in);
+            toReturn = ImageIO.read(toRead);
         } catch (IOException e) {
-            ErrorLogger.log("The specified file: " + in.toString() + " couldn't be loaded");
+            ErrorLogger.log("The specified file: " + toRead.getAbsolutePath() + " couldn't be loaded");
         }
 
         return toReturn;
     }
-    
-    public static String getFileFromRes(String fileName) {
-        return new File("./src/main/resources" + fileName).getAbsolutePath();
+
+    /**
+     * creates a new Name inside a directory
+     * @param pathToDir the path of the directory you want the new unique String to be created in 
+     * @return the unique String
+     */
+    public static synchronized  String getNewUniqueName(String pathToDir) {
+        ArrayList<String> usedNames = new ArrayList<>();
+
+        File folder = new File(pathToDir.replace("\"", ""));
+        File[] listOfFiles = folder.listFiles();
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                if (file.isFile()) {
+                    usedNames.add(file.getName());
+                }
+            }
+        }
+
+        String newName = getRandomName(100);
+        while (usedNames.contains(newName)) {
+            newName = getRandomName(100);
+        }
+
+        return newName;
+    }
+
+    private static String getRandomName(int wordSize) {
+        SecureRandom random = new SecureRandom();
+        return new java.math.BigInteger(wordSize, random).toString(32);
     }
     
-    public synchronized static String getNewUniqueName(String pathToDir) {
-		ArrayList<String> usedNames = new ArrayList<String>();
-
-		File folder = new File(pathToDir);
-		File[] listOfFiles = folder.listFiles();
-
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
-				usedNames.add(listOfFiles[i].getName());
-			}
-		}
-		
-		String newName = getRandomName(100);
-		while (usedNames.contains(newName)) {
-			newName = getRandomName(100);
-		}
-
-		return newName;
-	}
-    
-    private static String getRandomName(int wordSize) {
-    	SecureRandom random = new SecureRandom();
-    	return new java.math.BigInteger(wordSize, random).toString(32);    	
+    /**
+     * returns all files that end with the specified String that are in this folder
+     * @param pathToDir the path to the folder
+     * @param endsWith the String 
+     */
+    public static List<String> listAllFilesFromFolder(String pathToDir, String endsWith) {
+        ArrayList<String> foundFiles = new ArrayList<>();
+        
+        File folder = new File(pathToDir.replace("\"", ""));
+        
+        File[] listOfFiles = folder.listFiles();
+        
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {    
+                if (file.isFile() && file.getName().endsWith(endsWith)) {
+                    //surround it with quotes in case there are spaces in there
+                    foundFiles.add("\"" + file.getAbsolutePath() + "\"");
+                }
+            }
+        }
+        return foundFiles;
     }
 }

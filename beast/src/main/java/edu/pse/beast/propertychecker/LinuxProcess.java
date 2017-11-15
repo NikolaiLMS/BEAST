@@ -1,63 +1,127 @@
 package edu.pse.beast.propertychecker;
 
+import edu.pse.beast.toolbox.ErrorForUserDisplayer;
+import edu.pse.beast.toolbox.ErrorLogger;
+import edu.pse.beast.toolbox.FileLoader;
+import edu.pse.beast.toolbox.SuperFolderFinder;
+
 import java.io.File;
 import java.io.IOException;
-
-import edu.pse.beast.toolbox.ErrorLogger;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class LinuxProcess extends CBMCProcess {
 
-    public LinuxProcess(int voters, int candidates, int seats, String advanced, File toCheck, CheckerFactory parent) {
+    private final String RELATIVEPATHTOCBMC64 = "/linux/cbmcLin/cbmc";
+
+    //the time in milliseconds to wait for the termination of the process on linux
+    private final long WAITINGTIME = 3000;
+    
+    private final String enableUserInclude = "-I";
+    private final String userIncludeFolder = "/core/user_includes/";
+
+    // we want to compile all available c files, so the user doesn't have to
+    // specify anything
+    private final String cFileEnder = ".c";
+    
+    /**
+     * creates a new CBMC Checker for the windows OS
+     * 
+     * @param voters
+     *            the amount of voters
+     * @param candidates
+     *            the amount of candidates
+     * @param seats
+     *            the amount of seats
+     * @param advanced
+     *            the string that represents the advanced options
+     * @param toCheck
+     *            the file to check with cbmc
+     * @param parent
+     *            the parent CheckerFactory, that has to be notified about
+     *            finished checking
+     */
+    public LinuxProcess(int voters, int candidates, int seats, String advanced, File toCheck,
+            CheckerFactory parent) {
         super(voters, candidates, seats, advanced, toCheck, parent);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
     protected String sanitizeArguments(String toSanitize) {
-        // the linux version of cbmc has the trace command automatically, so we
-        // have to remove it
-        // or else cbmc would throw an error
-        return toSanitize.replace(" --trace", "");
+        return toSanitize;
     }
 
     @Override
     public Process createProcess(File toCheck, int voters, int candidates, int seats, String advanced) {
 
-        String[] argumentsToPass = new String[5 + advanced.split(";").length];
+        List<String> arguments = new ArrayList<String>();
+
+        String cbmc = "\"" + new File(SuperFolderFinder.getSuperFolder() + RELATIVEPATHTOCBMC64).getPath() + "\"";
+
+        //enable the usage of includes in cbmc
+        String userIncludeAndPath = "\"" + enableUserInclude + SuperFolderFinder.getSuperFolder() + userIncludeFolder + "\"";
         
+        //get all Files from the form "*.c" so we can include them into cbmc,
+        List<String> allFiles = FileLoader.listAllFilesFromFolder("\"" + SuperFolderFinder.getSuperFolder() + userIncludeFolder +"\"", cFileEnder);
         
-        //cbmc on linux wants every argument in a seperate string
-        argumentsToPass[0] = "cbmc";
-        
-        argumentsToPass[1] = "toCheck.getAbsolutePath()";
-        
-        argumentsToPass[2] = "-D V=" + voters;
-        
-        argumentsToPass[3] = "-D C=" + candidates;
-        
-        argumentsToPass[4] = "-D S=" + seats;
-        
-        for (int i = 5; i < argumentsToPass.length; i++) {
-            argumentsToPass[i] = advanced.split(";")[i - 5];
+        if (!new File(cbmc.replace("\"", "")).exists()) {
+            ErrorForUserDisplayer.displayError(
+                    "Can't find the cbmc program in the subfolger \"linux/cbmcLin/\", please download it from "
+                    + "the cbmc website and place it there!");
+        } else if (!new File(cbmc.replace("\"", "")).canExecute()) {
+            ErrorForUserDisplayer
+                    .displayError("This program doesn't have the privileges to execute this program. \n "
+                            + "Please change the access rights for the program \"/linux/cbmcLin/cbmc\" in the "
+                            + "BEAST installation folder and try again");
+        } else {
+
+            arguments.add(cbmc.replace("\"", ""));
+
+            arguments.add(userIncludeAndPath.replace("\"", ""));
+            
+            //wrap it in quotes, in case the path has spaces in it
+            arguments.add(toCheck.getAbsolutePath().replace("\"", ""));
+            
+            //iterate over all "*.c" files from the include folder, to include them
+            for (Iterator<String> iterator = allFiles.iterator(); iterator.hasNext();) {
+                String toBeIncludedFile = (String) iterator.next();
+                arguments.add(toBeIncludedFile.replace("\"", ""));
+            }
+            
+            // here we supply this call with the correct values for the voters,
+            // candidates and seats
+            arguments.add("-D V=" + voters);
+
+            arguments.add("-D C=" + candidates);
+
+            arguments.add("-D S=" + seats);
+
+            // we need the trace command to track the output on the command line
+            arguments.add("--trace");
+
+            if (advanced != null && advanced.length() > 0) {
+                for (int i = 0; i < advanced.split(";").length; i++) {
+                    String sanitized = sanitizeArguments(advanced.split(";")[i]);
+
+                    if (sanitized.trim().length() > 0) {
+                        arguments.add(sanitized);
+                    }
+                }
+            }
+
+            Process startedProcess = null;
+
+            ProcessBuilder prossBuild = new ProcessBuilder(arguments.toArray(new String[0]));
+
+            try {
+                startedProcess = prossBuild.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return startedProcess;
         }
-
-        Process startedProcess = null;
-
-        // TODO this is just a debug file
-        toCheck = new File("./src/main/resources/c_tempfiles/test.c");
-        ErrorLogger.log("LinuxProcess.java line 29 has to be removed, when the code creation works");
-
-        ProcessBuilder prossBuild = new ProcessBuilder(argumentsToPass);
-
-        System.out.println("Started a new Process with the following command: " + String.join(" ", prossBuild.command()));
-
-        try {
-            // save the new process in this var
-            startedProcess = prossBuild.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return startedProcess;
+        return null;
     }
 
     @Override
@@ -69,10 +133,15 @@ public class LinuxProcess extends CBMCProcess {
             process.destroyForcibly();
         }
         
+        try {
+            Thread.sleep(WAITINGTIME);
+        } catch (InterruptedException e) {
+        }
+
         if (process.isAlive()) {
-			ErrorLogger.log("Warning, the program was unable to shut down the CBMC Process \n"
-					+ "Please kill it manually, especially if it starts taking up a lot of ram");
-		}
+            ErrorForUserDisplayer.displayError("Warning, the program was still alive after trying to stop it \n"
+                    + "Please kill it manually if it is still alive, especially if it starts taking up a lot of ram");
+        }
     }
 
 }

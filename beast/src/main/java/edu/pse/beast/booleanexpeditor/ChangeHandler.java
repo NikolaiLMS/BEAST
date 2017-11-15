@@ -2,11 +2,12 @@ package edu.pse.beast.booleanexpeditor;
 
 import edu.pse.beast.datatypes.propertydescription.SymbolicVariable;
 import edu.pse.beast.datatypes.propertydescription.SymbolicVariableList;
-import javax.swing.JTextPane;
+
+import javax.swing.*;
 import java.util.LinkedList;
 
 /**
- * CLass for checking whether the loaded PostAndPrePropertiesDescription object has been modified since it was loaded.
+ * Class for checking whether the loaded PreAndPostConditionsDescription object has been modified since it was loaded.
  * @author NikolaiLMS
  */
 public class ChangeHandler {
@@ -18,17 +19,23 @@ public class ChangeHandler {
 
     /**
      * Constructor
-     * @param prePane JTextPane of the preProp BooleanExpCodeArea
-     * @param postPane JTextPane of the postProp BooleanExpCodeArea
-     * @param symbolicVariableList SymbolicVariableList of a newly loaded or saved PostAndPrePropertiesDescription object.
+     * @param prePane JTextPane of the preCondition BooleanExpCodeArea
+     * @param postPane JTextPane of the postCondition BooleanExpCodeArea
+     * @param symbolicVariableList
+     *        SymbolicVariableList of a newly loaded or saved PreAndPostConditionsDescription object.
      */
-    ChangeHandler(JTextPane prePane, JTextPane postPane, SymbolicVariableList symbolicVariableList) {
+    public ChangeHandler(JTextPane prePane, JTextPane postPane, SymbolicVariableList symbolicVariableList) {
         this.symbolicVariableList = symbolicVariableList;
         this.prePane = prePane;
         this.postPane = postPane;
         updatePreValues();
     }
 
+    /**
+     * Method that adds new JTextPanes to the changeHandler incase the BooleanExpEditor created new ones.
+     * @param prePane the new preConditions JTextPane
+     * @param postPane the new postConditions JTextPane
+     */
     public void addNewTextPanes(JTextPane prePane, JTextPane postPane) {
         this.prePane = prePane;
         this.postPane = postPane;
@@ -37,20 +44,20 @@ public class ChangeHandler {
 
     /**
      * Updates the "pre" variables used for comparison.
-     * Called after a new PostAndPrePropertiesDescription object is loaded or saved.
+     * Called after a new PreAndPostConditionsDescription object is loaded or saved.
      */
-    void updatePreValues() {
+    public void updatePreValues() {
         preString = prePane.getText() + postPane.getText();
-        preSymbolicVariableList = new LinkedList<SymbolicVariable>(symbolicVariableList.getSymbolicVariables());
+        preSymbolicVariableList =
+                new LinkedList<SymbolicVariable>(symbolicVariableList.getSymbolicVariables());
     }
 
     /**
-     * @return true if the currently loaded PostAndPrePropertiesDescription object differs from what is currently displayed
-     * in BooleanExpEditorWindow, false otherwise
+     * Method to check whether the input in the BooleanExpEditor has changed.
+     * @return true if it has changed, false otherwise
      */
     public boolean hasChanged() {
-        return !(preString.equals((String) prePane.getText() + postPane.getText()) &&
-                preSymbolicVariableList.equals(symbolicVariableList.getSymbolicVariables()));
+        return !(preString.equals((String) prePane.getText() + postPane.getText())
+                && preSymbolicVariableList.equals(symbolicVariableList.getSymbolicVariables()));
     }
-
 }

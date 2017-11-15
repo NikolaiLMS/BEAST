@@ -6,20 +6,14 @@
 package edu.pse.beast.CodeArea.InputToCode.NewlineInserter;
 
 import edu.pse.beast.codearea.InputToCode.CurlyBracesLineBeginningTabHandler;
-import edu.pse.beast.codearea.InputToCode.LineBeginningTabsHandler;
-import edu.pse.beast.codearea.InputToCode.NewlineInserter.NewlineInserter;
-import edu.pse.beast.codearea.InputToCode.LineHandler;
 import edu.pse.beast.codearea.InputToCode.NewlineInserter.StandardNewlineInserter;
 import edu.pse.beast.codearea.InputToCode.TabInserter;
-import edu.pse.beast.codearea.InputToCode.UserInsertToCode;
-import javax.swing.JTextPane;
+import org.junit.*;
+
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -27,7 +21,6 @@ import static org.junit.Assert.*;
  */
 public class NewlineInserterTest {
     private JTextPane pane;
-    private LineHandler lineHandler;
     private TabInserter tabsInserter;
     private CurlyBracesLineBeginningTabHandler lineBeg;
     
@@ -45,9 +38,8 @@ public class NewlineInserterTest {
     @Before
     public void setUp() {
         pane = new JTextPane();
-        lineHandler= new LineHandler(pane);
-        tabsInserter = new TabInserter(pane, lineHandler);
-        lineBeg = new CurlyBracesLineBeginningTabHandler(pane, lineHandler);
+        tabsInserter = new TabInserter(pane);
+        lineBeg = new CurlyBracesLineBeginningTabHandler(pane);
     }
     
     @After
@@ -60,8 +52,8 @@ public class NewlineInserterTest {
         String insert = "{}";
         pane.getStyledDocument().insertString(0, insert, null);
         ins.insertNewlineAtCurrentPosition(pane, tabsInserter, lineBeg, 1);
-        String code = pane.getText();
-        String codeafter = "{\r\n" + 
+        String code = pane.getStyledDocument().getText(0, pane.getStyledDocument().getLength());
+        String codeafter = "{\n" +
                             "}";
         assertEquals(codeafter, code);
         

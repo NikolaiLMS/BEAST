@@ -5,12 +5,14 @@
  */
 package edu.pse.beast.toolbox;
 
+
 /**
- *
+ * This interface is implemented by all classes which represent actions
+ * the user can perform which cannot be undone
  * @author Holger-Desktop
  */
 public abstract class UserAction {
-    private String id;
+    private final String id;
     
     /**
      * 

@@ -1,0 +1,11 @@
+addNew : New
+new : Edit new election description
+load : Open
+save : Save
+save_as : Save as
+undo : Undo last action
+redo : Redo last action
+cut : Cut
+copy : Copy
+paste : Paste
+simulation: open/ close simulation window

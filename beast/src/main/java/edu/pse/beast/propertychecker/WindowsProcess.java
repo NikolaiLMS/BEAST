@@ -1,81 +1,174 @@
 package edu.pse.beast.propertychecker;
 
-import java.io.BufferedWriter;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinNT;
+import edu.pse.beast.propertychecker.jna.Win32Process;
+import edu.pse.beast.toolbox.*;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
-import javax.swing.JOptionPane;
-
-import edu.pse.beast.toolbox.ErrorLogger;
-import edu.pse.beast.toolbox.FileLoader;
+import org.apache.commons.lang3.StringUtils;
 
 public class WindowsProcess extends CBMCProcess {
-	protected int maxWaits = 5;
+    private long WAITINGTIMEFORTERMINATION = 8000;
 
-	public WindowsProcess(int voters, int candidates, int seats, String advanced, File toCheck, CheckerFactory parent) {
-		super(voters, candidates, seats, advanced, toCheck, parent);
-	}
+    private final String relativePathToCBMC32 = "/windows/cbmcWIN/cbmc.exe";
+    private final String relativePathToCBMC64 = "/windows/cbmcWIN/cbmc64.exe";
 
-	@Override
-	protected Process createProcess(File toCheck, int voters, int candidates, int seats, String advanced) {
+    private final String enableUserInclude = "-I";
+    private final String userIncludeFolder = "/core/user_includes/";
 
-		// trace is mandatory under windows, or the counter example couldn't get
-		// generated
-		advanced = advanced + " --trace";
+    // we want to compile all available c files, so the user doesn't have to
+    // specify anything
+    private final String cFileEnder = ".c";
 
-		// set the values for the voters, candidates and seats
-		String arguments = advanced + " -D V=" + voters + " -D C=" + candidates + " -D S=" + seats;
+    /**
+     * creates a new CBMC Checker for the windows OS
+     * 
+     * @param voters
+     *            the amount of voters
+     * @param candidates
+     *            the amount of candidates
+     * @param seats
+     *            the amount of seats
+     * @param advanced
+     *            the string that represents the advanced options
+     * @param toCheck
+     *            the file to check with cbmc
+     * @param parent
+     *            the parent CheckerFactory, that has to be notified about
+     *            finished checking
+     */
+    public WindowsProcess(int voters, int candidates, int seats, String advanced, File toCheck,
+            CheckerFactory parent) {
+        super(voters, candidates, seats, advanced, toCheck, parent);
+    }
 
-		String vsCmd = null;
-		Process startedProcess = null;
+    @Override
+    protected Process createProcess(File toCheck, int voters, int candidates, int seats, String advanced) {
 
-		try {
-			vsCmd = getVScmdPath();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+        String userCommands = String.join(" ", advanced.split(";"));
 
-		if (vsCmd == null) {
-			ErrorLogger.log("Cant find the VScmd. Is it installed correctly?");
-		}
+        // trace is mandatory under windows, or the counter example can't get
+        // generated
+        userCommands = userCommands + " --trace";
 
-		String cbmcEXE = FileLoader.getFileFromRes("/cbmcWIN/cbmc.exe");
+        // set the values for the voters, candidates and seats
+        String arguments = userCommands + " -D V=" + voters + " -D C=" + candidates + " -D S=" + seats;
 
-		// TODO this is just a debug file
-		toCheck = new File("./src/main/resources/c_tempfiles/test.c");
-		ErrorLogger.log("WindowsProcess.java lien 48 has to be removed, when the code creation works");
+        // enable the usage of includes in cbmc
+        String userIncludeAndPath = "\"" + enableUserInclude + SuperFolderFinder.getSuperFolder()
+                + userIncludeFolder + "\"";
 
-		// because windows is weird the whole call that would get placed inside
-		// VScmd has to be in one giant string
-		String cbmcCall = "\"" + vsCmd + "\"" + " & " + cbmcEXE + " " + "\"" + toCheck.getAbsolutePath() + "\"" + " "
-				+ arguments;
+        //get all Files from the form "*.c" so we can include them into cbmc,
+        List<String> allFiles = FileLoader.listAllFilesFromFolder("\"" + SuperFolderFinder.getSuperFolder() + userIncludeFolder +"\"", cFileEnder);
+        
+        //we have to give all available "*c" files to cbmc, in case the user used his own includes, so we combine them here
+        String compileAllIncludesInIncludePath = StringUtils.join(allFiles, " ");
+        
+        String vsCmd = null;
+        Process startedProcess = null;
 
-		// this call starts a new VScmd isntance and lets cbmc run in it
-		ProcessBuilder prossBuild = new ProcessBuilder("cmd.exe", "/c", cbmcCall);
+        // try to get the vsCMD
+        try {
+            vsCmd = WindowsOStoolbox.getVScmdPath();
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
-		System.out.println("AUFRUF:" + String.join(" ", prossBuild.command()));
+        if (vsCmd == null) {
+            ErrorForUserDisplayer.displayError(
+                    "The program \"VsDevCmd.bat\" couldn't be found. It is required to run this program, so "
+                            + "please supply it with it. \n"
+                            + " To do so, download the Visual Studio Community Version, install it (including "
+                            + "the C++ pack). \n "
+                            + "Then, search for the VsDevCmd.bat in it, and copy and paste it into the foler "
+                            + "/windows/ in the BEAST installation folder.");
+            return null;
+        } else {
 
-		try {
-			// save the new process in this var
-			startedProcess = prossBuild.start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            // surround the vsCMD string with quotes, in case it has spaces in
+            // it
+            vsCmd = "\"" + vsCmd + "\"";
 
-		return startedProcess;
-	}
+            // determine the os architecture
+            boolean is64bit = false;
+            if (System.getProperty("os.name").contains("Windows")) {
+                // only 64 bit windows contains this variable
+                is64bit = (System.getenv("ProgramFiles(x86)") != null);
+            } else {
+                ErrorLogger.log("The Windows procedure to call cbmc was used, even though this operating "
+                        + "system isn't Windows!");
+            }
 
-	@Override
-	protected void stopProcess() {
-		if (!process.isAlive()) {
+            String cbmcEXE = "";
+
+            // load the system specific cbmc programs
+            if (is64bit) {
+                cbmcEXE = new File(SuperFolderFinder.getSuperFolder() + relativePathToCBMC64).getPath();
+            } else {
+                cbmcEXE = new File(SuperFolderFinder.getSuperFolder() + relativePathToCBMC32).getPath();
+            }
+
+            if (!new File(cbmcEXE).exists()) {
+                ErrorForUserDisplayer.displayError(
+                        "Can't find the program \"cbmc.exe\" in the subfolger \"windows/cbmcWin/\". \n "
+                                + "Please download it from the cbmc website and place it there!");
+            } else if (!new File(cbmcEXE).canExecute()) {
+                ErrorForUserDisplayer
+                        .displayError("This program doesn't have the privileges to execute this program. \n "
+                                + "Please change the access rights for the program \"/windows/cbmcWin/cbmc.exe\" "
+                                + "in the BEAST installation folder and try again.");
+            } else {
+
+                // surround it with quotes, in case there are spaces in the name
+                cbmcEXE = "\"" + cbmcEXE + "\"";
+
+                // because windows is weird the whole call that will get placed
+                // inside
+                // VScmd has to be in one giant string
+                String cbmcCall =  vsCmd + " & " + cbmcEXE + " " + userIncludeAndPath + " " + "\""
+                        + toCheck.getAbsolutePath() + "\"" + " " + compileAllIncludesInIncludePath + " " + arguments;
+
+                List<String> callInList = new ArrayList<String>();
+                
+                callInList.add(cbmcCall);
+                
+                File batFile = new File(toCheck.getParent() + "\\" + toCheck.getName().replace(".c", ".bat"));
+                
+                FileSaver.writeStringLinesToFile(callInList, batFile);
+                
+                // this call starts a new VScmd instance and lets cbmc run in it
+               // ProcessBuilder prossBuild = new ProcessBuilder("cmd.exe", "/c", cbmcCall);
+
+                ProcessBuilder prossBuild = new ProcessBuilder("cmd.exe", "/c", "\"" + batFile.getAbsolutePath() + "\"");
+                
+                try {
+                    startedProcess = prossBuild.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                
+                return startedProcess;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected void stopProcess() {
+
+        if (!process.isAlive()) {
             ErrorLogger.log("Warning, process isn't alive anymore");
             return;
         } else {

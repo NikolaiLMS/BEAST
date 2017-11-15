@@ -1,6 +1,9 @@
 package edu.pse.beast.datatypes.booleanExpAST;
 
-import java.util.List;
+
+import edu.pse.beast.datatypes.booleanExpAST.BooleanValuedNodes.*;
+import edu.pse.beast.datatypes.booleanExpAST.otherValuedNodes.*;
+import edu.pse.beast.datatypes.booleanExpAST.otherValuedNodes.integerValuedNodes.*;
 
 /**
  *
@@ -9,11 +12,6 @@ import java.util.List;
  */
 public interface BooleanExpNodeVisitor {
 
-    /**
-     *
-     * @param node the node to visit
-     */
-    void visitBooleanListNode(BooleanExpListNode node);
 
     /**
      *
@@ -37,7 +35,7 @@ public interface BooleanExpNodeVisitor {
      *
      * @param node the node to visit
      */
-    void visitAquivalencyNode(EquivalencyNode node);
+    void visitEquivalencyNode(EquivalencyNode node);
 
     /**
      *
@@ -91,8 +89,13 @@ public interface BooleanExpNodeVisitor {
      *
      * @param exp the vote sum expression to visit
      */
-    void visitVoteSumExp(VoteSumForCandExp exp);
-    
+    void visitVoteSumExp(VoteSumForCandExp exp, boolean unique);
 
-    public void visitNumberExpNode(NumberExpression exp);
+    void visitIntegerNode(IntegerNode integerNode);
+
+    void visitIntegerComparisonNode(IntegerComparisonNode listComparisonNode);
+
+    void visitBinaryIntegerValuedNode(BinaryIntegerValuedNode binaryIntegerValuedNode);
+
+    void visitAtPosNode(AtPosExp atPosExp);
 }

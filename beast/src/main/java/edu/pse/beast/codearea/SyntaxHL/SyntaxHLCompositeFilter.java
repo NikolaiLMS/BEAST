@@ -1,15 +1,14 @@
 package edu.pse.beast.codearea.SyntaxHL;
 
-import java.awt.Color;
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
-import javax.swing.text.*;
 
 /**
+ * Class that creates a DocumentFilter
  * @author NikolaiLMS
  */
 public class SyntaxHLCompositeFilter extends DocumentFilter{
@@ -18,6 +17,11 @@ public class SyntaxHLCompositeFilter extends DocumentFilter{
     private StyleContext styleContext = StyleContext.getDefaultStyleContext();
     private AttributeSet blackAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.BLACK);
 
+    /**
+     *
+     * @param textPane
+     * @param regexAndColorList
+     */
     public SyntaxHLCompositeFilter(JTextPane textPane, ArrayList<RegexAndColor> regexAndColorList) {
         this.regexAndColorList = regexAndColorList;
         this.textPane = textPane;
@@ -46,22 +50,18 @@ public class SyntaxHLCompositeFilter extends DocumentFilter{
      */
     private void handleTextChanged()
     {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                updateTextStyles();
-            }
+        SwingUtilities.invokeLater(() -> {
+            updateTextStyles();
         });
     }
 
     /**
      * Build the regular expression that looks for the whole word of each word that you wish to find.
-     * @return
+     * @return the regular expression as a Pattern
      */
     private Pattern buildPattern(String token)
     {
-        Pattern p = Pattern.compile(token);
-        return p;
+        return Pattern.compile(token);
     }
 
     private void updateTextStyles()
@@ -69,7 +69,7 @@ public class SyntaxHLCompositeFilter extends DocumentFilter{
         // Remove old syntax HL
         textPane.getStyledDocument().setCharacterAttributes(0, textPane.getText().length(), blackAttributeSet, true);
 
-        // iterate over differnt groups of tokens and format them
+        // iterate over different groups of tokens and format them
         for (RegexAndColor iter : regexAndColorList) {
 
             // Look for tokens and highlight them

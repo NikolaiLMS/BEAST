@@ -1,0 +1,66 @@
+title : Parameter Editor
+voters : Voters
+candidates : Candidates
+seats : Seats
+timeout : Timeout
+max_processes : Max. number of processes
+to : to
+advanced : Advanced...
+seconds : Seconds
+minutes : Minutes
+hours : Hour
+days : Days
+title_advanced : User-defined arguments for CBMC
+ok : OK
+cancel : Cancel
+title_about : About BEAST
+about : About
+version : Version
+openDialogTitleText : Open project
+saveDialogTitleText : Save project
+lookInLabelText : Search in:
+openButtonText : Open
+cancelButtonText : Cancel
+fileNameLabelText : Filename
+filesOfTypeLabelText : File type
+openApproveButtonToolTipText : Open
+openApproveButtonText : Open
+saveApproveButtonToolTipText : Save
+saveApproveButtonText : Save
+cancelButtonToolTipText : Cancel
+fileNameHeaderText : Filename
+upFolderToolTipText : Up one level
+homeFolderToolTipText : Home
+newFolderToolTipText : Create new folder
+listViewButtonToolTipText : List view
+newFolderButtonText : Create new folder
+renameFileButtonText : Rename
+deleteFileButtonText : Delete
+filterLabelText : File type
+detailsViewButtonToolTipText : Details
+fileSizeHeaderText : Size
+fileDateHeaderText : Last modified
+fileApproveRegex : (.)+\.beast
+fileDescription : BEAST-Project-File (*.beast)
+objectCouldNotBeConvertedToString : Couldn't convert project into a String.
+objectCouldNotBeSavedError : Was not able to save Object.
+inputOutputErrorOpen : The File either does not exist or you don't have the necessary rights.
+invalidFileFormatErrorMessage : The chosen file doesn't have the right BEAST-Project format.
+wrongEncodingError : The project contains false encoded characters.
+inputOutputErrorSave : The folder, in which you want to save, doesn't exist or you don't have the necessary rights.
+wrongFileNameError : The given name doesn't match the regular expression '[_a-zA-Z0-9\-\.\s]+'.
+fileSuffix : .beast
+saveChanges : Save changes to '
+saveChangesSuffix : '?
+yesOption : Yes
+noOption : No
+cancelOption : Cancel
+searchingForErrors : Searching for errors
+electionDescriptionErrors : The election description contains errors.
+propertyErrors : The properties to be analysed still contain errors.
+parameterErrors : The parameters are erroneous.
+startingCheck : Analysis start-up
+waitingForPropertyResult :  Waiting for result of property '
+analysisEnded : Analysis ended after
+noProperty : No Property was selected for the analysis.
+falseStop : Only an analysis in progress can be stopped.

@@ -7,17 +7,12 @@ package edu.pse.beast.CodeArea.InputToCode;
 
 import edu.pse.beast.codearea.Actionlist.Actionlist;
 import edu.pse.beast.codearea.InputToCode.LockedLinesHandler;
-import edu.pse.beast.codearea.InputToCode.LockedLinesListener;
-import edu.pse.beast.codearea.InputToCode.LineHandler;
 import edu.pse.beast.codearea.SaveTextBeforeRemove;
-import javax.swing.JTextPane;
-import javax.swing.event.DocumentEvent;
+import org.junit.*;
+
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -27,16 +22,13 @@ import static org.junit.Assert.*;
 public class LockedLinesHandlerTest {
     private LockedLinesHandler lockedLinesHandler;
     private JTextPane pane;
-    private LineHandler lineHandler; 
     private SaveTextBeforeRemove beforeRemove;
     public LockedLinesHandlerTest() {
         this.pane = new JTextPane();
-        this.lineHandler = new LineHandler(pane);
         Actionlist actionlist = new Actionlist();
         beforeRemove = new SaveTextBeforeRemove(pane, actionlist);
         
-        this.lockedLinesHandler = new LockedLinesHandler(pane.getStyledDocument(),
-                lineHandler, beforeRemove);
+        this.lockedLinesHandler = new LockedLinesHandler(pane, beforeRemove);
     }
     
     @BeforeClass
@@ -113,6 +105,18 @@ public class LockedLinesHandlerTest {
         pane.getStyledDocument().remove(2, 1);  
         assertEquals("\n}", pane.getStyledDocument().getText(0, 2));
         assertTrue(lockedLinesHandler.isLineLocked(1));
+    }
+    
+    @Test
+    public void testHandlesAddNewlineAtEndOfLine() throws BadLocationException {
+        String text = "asdasdasd\nasd";
+        pane.getStyledDocument().insertString(0, text, null);
+        lockedLinesHandler.lockLine(0);
+        lockedLinesHandler.lockLine(1);
+        pane.getStyledDocument().insertString(9, "\n", null);
+        assertTrue(lockedLinesHandler.isLineLocked(0));
+        assertFalse(lockedLinesHandler.isLineLocked(1));
+        assertTrue(lockedLinesHandler.isLineLocked(2));
     }
     
 }

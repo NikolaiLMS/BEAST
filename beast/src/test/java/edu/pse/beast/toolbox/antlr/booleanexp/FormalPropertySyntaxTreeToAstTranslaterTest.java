@@ -5,23 +5,13 @@
  */
 package edu.pse.beast.toolbox.antlr.booleanexp;
 
-import edu.pse.beast.toolbox.antlr.booleanexp.GenerateAST.FormalPropertySyntaxTreeToAstTranslator;
-import edu.pse.beast.datatypes.booleanExpAST.BooleanExpListNode;
 import edu.pse.beast.datatypes.internal.InternalTypeContainer;
 import edu.pse.beast.datatypes.internal.InternalTypeRep;
 import edu.pse.beast.toolbox.antlr.booleanexp.GenerateAST.BooleanExpScope;
+import edu.pse.beast.toolbox.antlr.booleanexp.GenerateAST.FormalPropertySyntaxTreeToAstTranslator;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.*;
 
 /**
  *
@@ -58,8 +48,12 @@ public class FormalPropertySyntaxTreeToAstTranslaterTest {
     @Test
     public void testCreateASTComparison() {
         FormalPropertySyntaxTreeToAstTranslator translater = new FormalPropertySyntaxTreeToAstTranslator();
-        InternalTypeContainer inputType = new InternalTypeContainer(new InternalTypeContainer(InternalTypeRep.CANDIDATE), InternalTypeRep.VOTER);
-        InternalTypeContainer output = new InternalTypeContainer(new InternalTypeContainer(InternalTypeRep.CANDIDATE), InternalTypeRep.CANDIDATE);  
+        InternalTypeContainer inputType =
+                new InternalTypeContainer(new InternalTypeContainer(InternalTypeRep.CANDIDATE),
+                                          InternalTypeRep.VOTER);
+        InternalTypeContainer output =
+                new InternalTypeContainer(new InternalTypeContainer(InternalTypeRep.CANDIDATE),
+                                          InternalTypeRep.CANDIDATE);
         
         BooleanExpScope declaredVar = new BooleanExpScope();
         declaredVar.addTypeForId("c", new InternalTypeContainer(InternalTypeRep.CANDIDATE));
@@ -72,6 +66,8 @@ public class FormalPropertySyntaxTreeToAstTranslaterTest {
         String exp = "FOR_ALL_VOTERS(v) : EXISTS_ONE_CANDIDATE(c) : (c == VOTES2(v) && (VOTE_SUM_FOR_CANDIDATE(c)>= 3 ==> c < 2));";    
         
     }
+
+
 
     @Test
     public void testCreateAST() {

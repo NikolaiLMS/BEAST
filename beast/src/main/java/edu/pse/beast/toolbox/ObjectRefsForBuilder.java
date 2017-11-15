@@ -5,10 +5,10 @@
  */
 package edu.pse.beast.toolbox;
 
+import edu.pse.beast.options.OptionsInterface;
+import edu.pse.beast.options.ParametereditorOptions.LanguageOptions;
 import edu.pse.beast.saverloader.SaverLoaderInterface;
 import edu.pse.beast.stringresource.StringLoaderInterface;
-import edu.pse.beast.options.LanguageOptions;
-import edu.pse.beast.options.OptionsInterface;
 
 /**
  * This holds references to all interfaces needed by the several builder classes 
@@ -26,7 +26,7 @@ public class ObjectRefsForBuilder {
     private final SaverLoaderInterface saverLoaderIF;
     
     /**
-     * 
+     * Constructor
      * @param optionsIF the optionsInterface
      * @param stringIF the Stringloaderinterface
      * @param languageOpts this languageoptionsinterface
@@ -71,5 +71,6 @@ public class ObjectRefsForBuilder {
     public SaverLoaderInterface getSaverLoaderIF() {
         return saverLoaderIF;
     }
+
     
 }

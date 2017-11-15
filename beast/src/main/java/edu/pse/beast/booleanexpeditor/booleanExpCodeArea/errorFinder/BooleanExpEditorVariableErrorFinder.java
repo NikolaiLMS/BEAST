@@ -1,53 +1,72 @@
 package edu.pse.beast.booleanexpeditor.booleanExpCodeArea.errorFinder;
 
 import edu.pse.beast.booleanexpeditor.booleanExpCodeArea.BooleanExpANTLRHandler;
+import edu.pse.beast.celectiondescriptioneditor.CElectionDescriptionEditor;
 import edu.pse.beast.codearea.ErrorHandling.CodeError;
 import edu.pse.beast.codearea.ErrorHandling.ErrorFinder;
-import edu.pse.beast.datatypes.descofvoting.ElectionTypeContainer;
-import edu.pse.beast.datatypes.propertydescription.PostAndPrePropertiesDescription;
-import edu.pse.beast.toolbox.antlr.booleanexp.GenerateAST.BooleanExpScopehandler;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.text.BadLocationException;
+import edu.pse.beast.datatypes.electiondescription.ElectionDescriptionChangeListener;
+import edu.pse.beast.datatypes.electiondescription.ElectionTypeContainer;
+import edu.pse.beast.datatypes.propertydescription.SymbolicVariableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.antlr.v4.runtime.tree.SyntaxTree;
+
+import java.util.ArrayList;
 
 /**
- * Class for finding type-errors in symbolic variable usage in the BooleanExpression(s) of the CodeArea
- * this class is an attribute of.
+ * Class for finding type-errors in symbolic variable usage in the
+ * BooleanExpression(s) of the CodeArea this class is an attribute of.
+ *
  * @author Nikolai
  */
-public class BooleanExpEditorVariableErrorFinder implements ErrorFinder {
-    private BooleanExpANTLRHandler antlrHandler;
-    private PostAndPrePropertiesDescription description;
-    private FormalExpErrorFinderTreeListener lis;
+public class BooleanExpEditorVariableErrorFinder implements ErrorFinder, ElectionDescriptionChangeListener {
+
+    private final BooleanExpANTLRHandler antlrHandler;
+    private final FormalExpErrorFinderTreeListener lis;
+
     /**
      * Constructor
-     * @param antlrHandler BooleanExpEditorANTLRHandler object this class uses to find errors
+     * @param ceditor the CElectionDescriptionEditor object
+     * @param list the SymbolicVariableList object
+     * @param antlrHandler BooleanExpEditorANTLRHandler object this class uses
+     * to find errors
      */
-    public BooleanExpEditorVariableErrorFinder(BooleanExpANTLRHandler antlrHandler) {
+    public BooleanExpEditorVariableErrorFinder(
+            BooleanExpANTLRHandler antlrHandler,
+            SymbolicVariableList list, CElectionDescriptionEditor ceditor) {
         this.antlrHandler = antlrHandler;
-        lis = new FormalExpErrorFinderTreeListener();
+        lis = new FormalExpErrorFinderTreeListener(list, ceditor);
     }
 
-     public void setUp(
-            BooleanExpScopehandler scopeHandler,
-            ElectionTypeContainer input,
-            ElectionTypeContainer output) {
-         lis.setUp(scopeHandler, input, output);        
-    }
-    
     @Override
     public ArrayList<CodeError> getErrors() {
+        ParseTree tree = antlrHandler.getParseTree();
+        ParseTreeWalker walker = new ParseTreeWalker();
         try {
-            ParseTree tree = antlrHandler.getParseTree();
-            ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(lis, tree);
-        } catch (BadLocationException ex) {
-            Logger.getLogger(BooleanExpEditorVariableErrorFinder.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<CodeError>();
         }
+
         return lis.getErrors();
     }
+
+    @Override
+    public void inputChanged(ElectionTypeContainer input) {
+        lis.setInput(input);
+    }
+
+    @Override
+    public void outputChanged(ElectionTypeContainer output) {
+        lis.setOutput(output);
+    }
+
+    /**
+     * Getter
+     * @return the FormalExpErrorFinderTreeListener object
+     */
+    public FormalExpErrorFinderTreeListener getLis() {
+        return lis;
+    }
+
 }

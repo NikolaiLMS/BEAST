@@ -1,0 +1,19 @@
+SINGLE_CHOICE_exp : Voter chooses exactly one candidate
+PREFERENCE_exp : Voter ranks all candidates according to his preference
+APPROVAL_exp : Voter approves or rejects each candidate
+WEIGHTED_APPROVAL_exp : Voter ranks each candidate with an integer number between 0 and 100
+
+SINGLE_CHOICE : Single-choice
+PREFERENCE: Preference
+APPROVAL: Approval
+WEIGHTED_APPROVAL: Weighted-approval
+
+CAND_OR_UNDEF_exp : One winner or not determined
+CAND_PER_SEAT_exp : Every seat gets assigned to a candidate
+
+CAND_OR_UNDEF: Candidate or not determined
+CAND_PER_SEAT: Seats to candidates
+
+create : Create
+
+emptyNameTextFieldError : You should never leave the name empty.

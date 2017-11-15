@@ -1,0 +1,11 @@
+﻿addNew : Neu
+new : Neue Wahlverfahrensbeschreibung editieren
+save : Speichern
+save_as : Speichern unter
+load : Öffnen
+undo : Letzte Aktion Rückgängig machen
+redo : Letzte Aktion Wiederholen
+cut : Ausschneiden
+copy : Kopieren
+paste : Einfügen
+simulation: Öffne/ Schließe Simulationsfenster

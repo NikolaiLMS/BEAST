@@ -5,32 +5,30 @@
  */
 package edu.pse.beast.codearea.InputToCode.NewlineInserter;
 
+import edu.pse.beast.codearea.InputToCode.JTextPaneToolbox;
 import edu.pse.beast.codearea.InputToCode.LineBeginningTabsHandler;
-import edu.pse.beast.codearea.InputToCode.LineHandler;
 import edu.pse.beast.codearea.InputToCode.TabInserter;
-import edu.pse.beast.codearea.InputToCode.UserInsertToCode;
-import javax.swing.JTextPane;
+
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledDocument;
 
 /**
- *
+ * Inesrts newlines into locked lines by inserting it at their beginning,
+ * thus shifting the entire line down by one
  * @author Holger-Desktop
  */
 public class LockedLineNewlineInserter implements NewlineInserter {
     
-    private LineHandler lineHandler;
   
     @Override
     public void insertNewlineAtCurrentPosition(
             JTextPane pane, TabInserter tabInserter,
             LineBeginningTabsHandler beginningTabsHandler,
             int pos) throws BadLocationException {
-            if(lineHandler == null) lineHandler = new LineHandler(pane);
             
-            int lineBeginning = lineHandler.getClosestLineBeginning(pos);
+            int lineBeginning = pos - JTextPaneToolbox.getDistanceToClosestLineBeginning(pane, pos);
             
-            pane.getStyledDocument().insertString(lineBeginning + 1, "\n", null);
+            pane.getStyledDocument().insertString(lineBeginning, "\n", null);
     }
     
 }

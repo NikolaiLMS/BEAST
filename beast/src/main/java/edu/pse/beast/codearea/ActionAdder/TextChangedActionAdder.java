@@ -5,43 +5,57 @@
  */
 package edu.pse.beast.codearea.ActionAdder;
 
-import edu.pse.beast.celectiondescriptioneditor.UserActions.SaveBeforeChangeHandler;
 import edu.pse.beast.codearea.Actionlist.Actionlist;
-import edu.pse.beast.codearea.Actionlist.EmptyActionList;
 import edu.pse.beast.codearea.Actionlist.TextAction.TextAddedAction;
 import edu.pse.beast.codearea.Actionlist.TextAction.TextDelta;
 import edu.pse.beast.codearea.Actionlist.TextAction.TextRemovedAction;
 import edu.pse.beast.codearea.SaveTextBeforeRemove;
 import edu.pse.beast.codearea.StoppedTypingContinuouslyListener;
 import edu.pse.beast.codearea.StoppedTypingContinuouslyMessager;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JTextPane;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
+
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
+ * This class creates TextRemoved and TextAddedActions and adds them to the
+ * supplied Actionlist
  * @author Holger-Desktop
  */
-public class TextChangedActionAdder implements ActionlistListener, DocumentListener {
+public class TextChangedActionAdder implements 
+        ActionlistListener, 
+        DocumentListener, 
+        StoppedTypingContinuouslyListener {
+    private final int caretPos = 0;
     private boolean listen = true;
-    private JTextPane pane;
-    private Actionlist actionList;
-    private String recordingString = "";
-    private SaveTextBeforeRemove saveBeforeRemove;    
+    private final JTextPane pane;
+    private final Actionlist actionList;
+    private int recordingStartPos;
+    private final String recordingString = "";
+    private final SaveTextBeforeRemove saveBeforeRemove;    
+    private final StoppedTypingContinuouslyMessager typingContinuouslyMessager;
     
-    public TextChangedActionAdder(JTextPane pane, Actionlist list, SaveTextBeforeRemove saveBeforeRemove) {
+    /**
+     * creates a TextChangedActionAdder
+     * @param pane the JTextPane object used to communicate with the user. If the user
+     * changes the contents of this object, a corresponding action will be created
+     * @param list the Actionlist to which the created actions will be added
+     * @param saveBeforeRemove used to get removed Strings if the user removes text
+     */
+    public TextChangedActionAdder(
+            JTextPane pane,
+            Actionlist list,
+            SaveTextBeforeRemove saveBeforeRemove) {
         this.pane = pane;
         this.actionList = list;
-        list.addActionAdder(this);
+        list.addActionlistListener(this);
         this.saveBeforeRemove = saveBeforeRemove;
         pane.getStyledDocument().addDocumentListener(this);
+        typingContinuouslyMessager = new StoppedTypingContinuouslyMessager(pane);
+        this.typingContinuouslyMessager.addListener(this);
     }
 
     @Override
@@ -60,7 +74,7 @@ public class TextChangedActionAdder implements ActionlistListener, DocumentListe
         if(!listen) return; 
         try {
             String added = pane.getStyledDocument().getText(de.getOffset(), de.getLength());
-            System.out.println("adding action " + added + " at: " + de.getOffset());
+                      
             TextAddedAction action = new TextAddedAction(
                     new TextDelta(de.getOffset(), added),
                     pane.getStyledDocument());
@@ -72,7 +86,7 @@ public class TextChangedActionAdder implements ActionlistListener, DocumentListe
 
     @Override
     public void removeUpdate(DocumentEvent de) {
-        if(!listen) return;    
+        if(!listen) return;            
         TextRemovedAction action = new TextRemovedAction(
                 new TextDelta(de.getOffset(), saveBeforeRemove.getRemoveString(de.getOffset(), de.getLength())),
                 pane.getStyledDocument());
@@ -82,4 +96,11 @@ public class TextChangedActionAdder implements ActionlistListener, DocumentListe
     @Override
     public void changedUpdate(DocumentEvent de) {
     }
+
+    @Override
+    public void StoppedTypingContinuously(int newPos) {   
+        recordingStartPos = newPos;
+    }
+    
+
 }

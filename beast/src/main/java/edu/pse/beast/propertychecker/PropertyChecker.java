@@ -5,17 +5,11 @@
  */
 package edu.pse.beast.propertychecker;
 
-import java.util.List;
+import edu.pse.beast.datatypes.electiondescription.ElectionDescription;
+import edu.pse.beast.highlevel.*;
 
-import edu.pse.beast.datatypes.ElectionCheckParameter;
-import edu.pse.beast.datatypes.descofvoting.ElectionDescription;
-import edu.pse.beast.datatypes.propertydescription.PostAndPrePropertiesDescription;
-import edu.pse.beast.highlevel.ElectionDescriptionSource;
-import edu.pse.beast.highlevel.ParameterSource;
-import edu.pse.beast.highlevel.PostAndPrePropertiesDescriptionSource;
-import edu.pse.beast.highlevel.ResultCheckerCommunicator;
-import edu.pse.beast.highlevel.ResultInterface;
-import edu.pse.beast.toolbox.ErrorLogger;
+import java.io.File;
+import java.util.List;
 
 /**
  *
@@ -36,18 +30,38 @@ public class PropertyChecker implements ResultCheckerCommunicator {
 
     @Override
     public List<ResultInterface> checkPropertiesForDescription(ElectionDescriptionSource elecDescr,
-            PostAndPrePropertiesDescriptionSource propDescrSrc, ParameterSource params) {
+            PreAndPostConditionsDescriptionSource propDescrSrc, ParameterSource params) {
 
-        this.factoryController = new FactoryController(elecDescr, propDescrSrc, params, checkerID, params.getParameter().getProcesses());
-        return factoryController.getResults();
+        if (elecDescr == null || propDescrSrc == null || params == null) {
+            return null;
+        } else {
+            this.factoryController = new FactoryController(elecDescr, propDescrSrc, params, checkerID,
+                    params.getParameter().getProcesses());
+            return factoryController.getResults();
+        }
+    }
+    
+    @Override
+    public UnprocessedCBMCResult checkFile(File toCheck, ElectionDescription electionDescr, ParameterSource params) {
+        if (toCheck == null || params == null) {
+            return null;
+        } else {
+            this.factoryController = new FactoryController(toCheck, params, checkerID,
+                    params.getParameter().getProcesses());
+            //because we only have ONE file to check, we  only give back the first result
+            UnprocessedCBMCResult toReturn = factoryController.getUnprocessedResults().get(0);
+            toReturn.setElectionType(electionDescr);
+            return toReturn;
+        }
     }
 
     @Override
-    public void abortChecking() {
+    public boolean abortChecking() {
         if (factoryController != null) {
             factoryController.stopChecking(false);
+            return true;
         } else {
-            ErrorLogger.log("Tried to stop the checking before a factory controller existed!");
+            return false;
         }
     }
 

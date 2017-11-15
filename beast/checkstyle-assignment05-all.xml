@@ -35,7 +35,7 @@
         <!-- Checks for long methods and constructors. !-->
         <!-- See http://checkstyle.sf.net/config_sizes.html !-->
         <module name="com.puppycrawl.tools.checkstyle.checks.sizes.MethodLength">
-            <property name="max"        value="80"/>
+            <property name="max"        value="120"/>
             <property name="countEmpty" value="true"/>
             <property name="tokens"     value="METHOD_DEF, CTOR_DEF"/>
         </module>
@@ -49,7 +49,7 @@
         <!-- Checks the number of parameters of a method or constructor. !-->
         <!-- See http://checkstyle.sf.net/config_sizes.html !-->
         <module name="com.puppycrawl.tools.checkstyle.checks.sizes.ParameterNumber">
-            <property name="max"    value="7"/>
+            <property name="max"    value="12"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
         </module>
         

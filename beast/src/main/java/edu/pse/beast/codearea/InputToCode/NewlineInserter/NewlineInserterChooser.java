@@ -6,13 +6,15 @@
 package edu.pse.beast.codearea.InputToCode.NewlineInserter;
 
 import edu.pse.beast.codearea.InputToCode.LockedLinesHandler;
+
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
 
 /**
- *
+ * This class chooses the right newlineinserter implementation based on the chars
+ * surrounding the caret position of the given pane. 
  * @author Holger-Desktop
  */
 public class NewlineInserterChooser {
@@ -28,6 +30,14 @@ public class NewlineInserterChooser {
         this.curlyBracesInserter = new BetweenCurlyBracesNewlineInserter(standardInserter);
     }
     
+    /**
+     * finds the right implementation of newlineinserter depending on the chars 
+     * surrounding the panes currentcaretpositin. If the lines is locked,
+     * it returns lockedlinenewlineinserter. If the caret is between
+     * {}, it returns betweencurlybracesnewlineinserter. If it is none
+     * of the above, it returns standardnewlineinserter
+     * @return 
+     */
     public NewlineInserter getNewlineInserter() {
         NewlineInserter found = chooseNewlineInserter();
         return findMoreSpecializedInserter(found);
@@ -40,6 +50,13 @@ public class NewlineInserterChooser {
     private NewlineInserter chooseNewlineInserter() {
         int lineNumber = absPosToLineNumber(pane.getCaretPosition());
         if(lockedLinesHandler.isLineLocked(lineNumber)) {
+            try {
+                if(pane.getStyledDocument().getText(pane.getCaretPosition(), 1).equals("\n")) {                    
+                    return standardInserter;
+                }
+            } catch (BadLocationException ex) {
+                Logger.getLogger(NewlineInserterChooser.class.getName()).log(Level.SEVERE, null, ex);
+            }
             return lockedInserter;
         }
         try {

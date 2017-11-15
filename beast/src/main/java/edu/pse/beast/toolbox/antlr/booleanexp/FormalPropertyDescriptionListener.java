@@ -1,6 +1,4 @@
-package edu.pse.beast.toolbox.antlr.booleanexp;
-
-// Generated from D:\studium\PSE\Implementierung\impl rep 01_23\PSE-Wahlverfahren-Implementierung\beast\src\main\resources\antlrgrammars\FormalPropertyDescription.g4 by ANTLR 4.5.3
+package edu.pse.beast.toolbox.antlr.booleanexp;// Generated from FormalPropertyDescription.g4 by ANTLR 4.5.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -99,6 +97,56 @@ public interface FormalPropertyDescriptionListener extends ParseTreeListener {
 	 */
 	void exitNumberExpression(FormalPropertyDescriptionParser.NumberExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#typeByPosExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeByPosExp(FormalPropertyDescriptionParser.TypeByPosExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FormalPropertyDescriptionParser#typeByPosExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeByPosExp(FormalPropertyDescriptionParser.TypeByPosExpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#voterByPosExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterVoterByPosExp(FormalPropertyDescriptionParser.VoterByPosExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FormalPropertyDescriptionParser#voterByPosExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitVoterByPosExp(FormalPropertyDescriptionParser.VoterByPosExpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#candByPosExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterCandByPosExp(FormalPropertyDescriptionParser.CandByPosExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FormalPropertyDescriptionParser#candByPosExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitCandByPosExp(FormalPropertyDescriptionParser.CandByPosExpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#seatByPosExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterSeatByPosExp(FormalPropertyDescriptionParser.SeatByPosExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FormalPropertyDescriptionParser#seatByPosExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitSeatByPosExp(FormalPropertyDescriptionParser.SeatByPosExpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#integer}.
+	 * @param ctx the parse tree
+	 */
+	void enterInteger(FormalPropertyDescriptionParser.IntegerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FormalPropertyDescriptionParser#integer}.
+	 * @param ctx the parse tree
+	 */
+	void exitInteger(FormalPropertyDescriptionParser.IntegerContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#electExp}.
 	 * @param ctx the parse tree
 	 */
@@ -118,6 +166,16 @@ public interface FormalPropertyDescriptionListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVoteExp(FormalPropertyDescriptionParser.VoteExpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#passType}.
+	 * @param ctx the parse tree
+	 */
+	void enterPassType(FormalPropertyDescriptionParser.PassTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FormalPropertyDescriptionParser#passType}.
+	 * @param ctx the parse tree
+	 */
+	void exitPassType(FormalPropertyDescriptionParser.PassTypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#constantExp}.
 	 * @param ctx the parse tree
@@ -139,6 +197,16 @@ public interface FormalPropertyDescriptionListener extends ParseTreeListener {
 	 */
 	void exitVoteSumExp(FormalPropertyDescriptionParser.VoteSumExpContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#voteSumUniqueExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterVoteSumUniqueExp(FormalPropertyDescriptionParser.VoteSumUniqueExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FormalPropertyDescriptionParser#voteSumUniqueExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitVoteSumUniqueExp(FormalPropertyDescriptionParser.VoteSumUniqueExpContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#passSymbVar}.
 	 * @param ctx the parse tree
 	 */
@@ -148,6 +216,26 @@ public interface FormalPropertyDescriptionListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPassSymbVar(FormalPropertyDescriptionParser.PassSymbVarContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#passPosition}.
+	 * @param ctx the parse tree
+	 */
+	void enterPassPosition(FormalPropertyDescriptionParser.PassPositionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FormalPropertyDescriptionParser#passPosition}.
+	 * @param ctx the parse tree
+	 */
+	void exitPassPosition(FormalPropertyDescriptionParser.PassPositionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#passByPos}.
+	 * @param ctx the parse tree
+	 */
+	void enterPassByPos(FormalPropertyDescriptionParser.PassByPosContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FormalPropertyDescriptionParser#passByPos}.
+	 * @param ctx the parse tree
+	 */
+	void exitPassByPos(FormalPropertyDescriptionParser.PassByPosContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link FormalPropertyDescriptionParser#symbolicVarExp}.
 	 * @param ctx the parse tree

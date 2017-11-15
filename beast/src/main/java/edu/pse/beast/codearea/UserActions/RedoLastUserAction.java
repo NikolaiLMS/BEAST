@@ -9,7 +9,7 @@ import edu.pse.beast.codearea.Actionlist.Actionlist;
 import edu.pse.beast.toolbox.UserAction;
 
 /**
- *
+ * this useraction asks the given actionlist to redo the last action
  * @author Holger-Desktop
  */
 public class RedoLastUserAction extends UserAction {
@@ -22,7 +22,6 @@ public class RedoLastUserAction extends UserAction {
 
     @Override
     public void perform() {
-        System.out.println("redo");
         list.redoLast();
     }
     

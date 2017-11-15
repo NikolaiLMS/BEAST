@@ -6,19 +6,21 @@
 package edu.pse.beast.codearea.Actionlist.TextAction;
 
 import edu.pse.beast.codearea.Actionlist.Action;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
+ * This class represents the act of adding text to a Styleddocument and makes
+ * undoing this action possible
  * @author Holger-Desktop
  */
 public class TextAddedAction implements Action {
     
-    private TextDelta td;
-    private StyledDocument doc;
+    private final TextDelta td;
+    private final StyledDocument doc;
     
     public TextAddedAction(TextDelta td, StyledDocument doc) {
         this.doc = doc;

@@ -1,47 +1,45 @@
 package edu.pse.beast.booleanexpeditor.UserActions;
 
 import edu.pse.beast.booleanexpeditor.BooleanExpEditor;
-import edu.pse.beast.booleanexpeditor.ChangeHandler;
 import edu.pse.beast.datatypes.propertydescription.FormalPropertiesDescription;
-import edu.pse.beast.datatypes.propertydescription.PostAndPrePropertiesDescription;
+import edu.pse.beast.datatypes.propertydescription.PreAndPostConditionsDescription;
 import edu.pse.beast.datatypes.propertydescription.SymbolicVariableList;
 import edu.pse.beast.toolbox.UserAction;
 
-import javax.swing.*;
-
 /**
+ * UserAction subclass responsible creating a new PreAndPostConditionsDescription object and loading it into the editor
+ * and propertylist.
  * @author NikolaiLMS
  */
 public class NewPropsUserAction extends UserAction {
     private final BooleanExpEditor booleanExpEditor;
-    private final ChangeHandler changeHandler;
-    public NewPropsUserAction(BooleanExpEditor booleanExpEditor, ChangeHandler changeHandler) {
+
+    /**
+     * Constructor
+     * @param booleanExpEditor the BooleanExpEditor object this UserAction belongs to
+     */
+    public NewPropsUserAction(BooleanExpEditor booleanExpEditor) {
         super("new");
         this.booleanExpEditor = booleanExpEditor;
-        this.changeHandler = changeHandler;
     }
 
-    public static PostAndPrePropertiesDescription createEmptyPostAndPropObject() {
+    /**
+     * Method that
+     * @return s an empty PreAndPostConditionsDescription object that can be loaded into the editor/propertylist.
+     */
+    public static PreAndPostConditionsDescription createEmptyPreAndPostConditionObject() {
         FormalPropertiesDescription preDesc = new FormalPropertiesDescription("");
         FormalPropertiesDescription postDesc = new FormalPropertiesDescription("");
         SymbolicVariableList symbolicVariableList = new SymbolicVariableList();
-        return new PostAndPrePropertiesDescription("NewFormalProperty", preDesc, postDesc,
+        return new PreAndPostConditionsDescription("NewFormalProperty", preDesc, postDesc,
                         symbolicVariableList);
     }
 
     @Override
     public void perform() {
-        if (changeHandler.hasChanged()) {
-            // TEMPORARY
-            int option = booleanExpEditor.getWindow().showOptionPane(booleanExpEditor.getCurrentlyLoadedPostAndPreProp()
-                    .getName());
-            if (option == JOptionPane.NO_OPTION) {
-                booleanExpEditor.loadPostAndPreProperties(createEmptyPostAndPropObject());
-            } else if (option == JOptionPane.YES_OPTION) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        } else {
-            booleanExpEditor.loadPostAndPreProperties(createEmptyPostAndPropObject());
+        if (booleanExpEditor.letUserEditPreAndPostConditions(createEmptyPreAndPostConditionObject(), false)) {
+            booleanExpEditor.getFileChooser().setHasBeenSaved(false);
+            booleanExpEditor.getPropertyListController().addNewProperty();
         }
     }
 }
